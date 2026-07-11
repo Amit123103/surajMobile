@@ -79,7 +79,7 @@ export default function AdminPhones() {
             {printing.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-8 text-center text-zinc-500">
-                  No printing found. Click "Add New PrintJob" to create one.
+                  No printing found. Click &quot;Add New PrintJob&quot; to create one.
                 </td>
               </tr>
             ) : (

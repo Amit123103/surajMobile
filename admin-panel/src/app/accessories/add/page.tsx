@@ -38,7 +38,7 @@ export default function Addaccessory() {
       let imageUrl = "";
       if (imageFile) {
         const storageRef = ref(storage, `accessories/${Date.now()}_${imageFile.name}`);
-        const snapshot = await uploadBytes(typeRef, imageFile);
+        const snapshot = await uploadBytes(storageRef, imageFile);
         imageUrl = await getDownloadURL(snapshot.ref);
       }
 

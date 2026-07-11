@@ -79,7 +79,7 @@ export default function Adminaccessories() {
             {accessories.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-8 text-center text-zinc-500">
-                  No accessories found. Click "Add New accessory" to create one.
+                  No accessories found. Click &quot;Add New accessory&quot; to create one.
                 </td>
               </tr>
             ) : (

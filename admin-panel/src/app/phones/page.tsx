@@ -79,7 +79,7 @@ export default function AdminPhones() {
             {phones.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-8 text-center text-zinc-500">
-                  No phones found. Click "Add New Phone" to create one.
+                  No phones found. Click &quot;Add New Phone&quot; to create one.
                 </td>
               </tr>
             ) : (

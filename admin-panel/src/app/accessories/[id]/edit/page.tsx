@@ -73,7 +73,7 @@ export default function Editaccessory({ params }: { params: Promise<{ id: string
       
       if (imageFile) {
         const storageRef = ref(storage, `accessories/${Date.now()}_${imageFile.name}`);
-        const snapshot = await uploadBytes(typeRef, imageFile);
+        const snapshot = await uploadBytes(storageRef, imageFile);
         updatedImageUrl = await getDownloadURL(snapshot.ref);
       }
 

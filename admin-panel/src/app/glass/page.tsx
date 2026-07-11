@@ -79,7 +79,7 @@ export default function AdminPhones() {
             {glass.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-8 text-center text-zinc-500">
-                  No glass found. Click "Add New GlassItem" to create one.
+                  No glass found. Click &quot;Add New GlassItem&quot; to create one.
                 </td>
               </tr>
             ) : (

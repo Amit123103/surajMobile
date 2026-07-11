@@ -79,7 +79,7 @@ export default function AdminPhones() {
             {repairs.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-8 text-center text-zinc-500">
-                  No repairs found. Click "Add New Repair" to create one.
+                  No repairs found. Click &quot;Add New Repair&quot; to create one.
                 </td>
               </tr>
             ) : (
