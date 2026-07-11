@@ -32,21 +32,21 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        isScrolled ? "py-3" : "py-5"
+      className={`fixed top-4 inset-x-0 z-50 transition-all duration-300 ${
+        isScrolled ? "translate-y-0" : "translate-y-2"
       }`}
     >
-      <div className="container mx-auto px-4 md:px-6">
+      <div className="container max-w-5xl mx-auto px-4 md:px-6">
         <div
-          className={`flex items-center justify-between rounded-2xl transition-all duration-500 ${
+          className={`flex items-center justify-between rounded-full transition-all duration-500 shadow-lg ${
             isScrolled
-              ? "bg-primary-50/90 dark:bg-zinc-900/90 backdrop-blur-md shadow-sm border border-primary-200 dark:border-zinc-800 px-6 py-3"
-              : "bg-primary-50 dark:bg-zinc-900 px-4 py-4"
+              ? "bg-primary-50/90 dark:bg-zinc-900/90 backdrop-blur-md border border-primary-200 dark:border-zinc-800 px-6 py-2"
+              : "bg-primary-50 dark:bg-zinc-900 border border-transparent px-6 py-3 md:py-4"
           }`}
         >
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="relative w-12 h-12 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <div className="relative w-10 h-10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
               <Image src="/logo.jpg" alt="Suraj Phone Care Logo" fill className="object-contain" />
             </div>
           </Link>
