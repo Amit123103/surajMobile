@@ -39,7 +39,9 @@ export function Navbar() {
       <div className="container mx-auto px-4 md:px-6">
         <div
           className={`flex items-center justify-between rounded-2xl transition-all duration-500 ${
-            isScrolled ? "glass-card px-6 py-3" : "bg-transparent px-4"
+            isScrolled
+              ? "bg-primary-50/90 dark:bg-zinc-900/90 backdrop-blur-md shadow-sm border border-primary-200 dark:border-zinc-800 px-6 py-3"
+              : "bg-primary-50 dark:bg-zinc-900 px-4 py-4"
           }`}
         >
           {/* Logo */}
