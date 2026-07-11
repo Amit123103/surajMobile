@@ -40,8 +40,8 @@ export function Navbar() {
         <div
           className={`flex items-center justify-between rounded-full transition-all duration-500 shadow-lg ${
             isScrolled
-              ? "bg-primary-50/90 dark:bg-zinc-900/90 backdrop-blur-md border border-primary-200 dark:border-zinc-800 px-6 py-2"
-              : "bg-primary-50 dark:bg-zinc-900 border border-transparent px-6 py-3 md:py-4"
+              ? "bg-zinc-300/95 backdrop-blur-md border border-zinc-400 px-6 py-2"
+              : "bg-black border border-transparent px-6 py-3 md:py-4"
           }`}
         >
           {/* Logo */}
@@ -61,8 +61,8 @@ export function Navbar() {
                   href={link.href}
                   className={`relative px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${
                     isActive
-                      ? "text-primary-600 bg-primary-50 dark:bg-primary-900/20"
-                      : "text-foreground/80 hover:text-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
+                      ? isScrolled ? "text-black bg-zinc-400" : "text-white bg-zinc-800"
+                      : isScrolled ? "text-zinc-700 hover:text-black hover:bg-zinc-400/50" : "text-zinc-400 hover:text-white hover:bg-zinc-800/80"
                   }`}
                 >
                   {link.name}
@@ -73,16 +73,16 @@ export function Navbar() {
 
           {/* Action Icons */}
           <div className="flex items-center gap-2 md:gap-4">
-            <ThemeToggle />
-            <button className="p-2 text-foreground/80 hover:text-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors hidden sm:block">
+            <ThemeToggle className={`p-2 rounded-full transition-colors relative ${isScrolled ? "text-zinc-700 hover:text-black hover:bg-zinc-400/50" : "text-zinc-400 hover:text-white hover:bg-zinc-800/80"}`} />
+            <button className={`p-2 rounded-full transition-colors hidden sm:block ${isScrolled ? "text-zinc-700 hover:text-black hover:bg-zinc-400/50" : "text-zinc-400 hover:text-white hover:bg-zinc-800/80"}`}>
               <Search className="w-5 h-5" />
             </button>
-            <button className="p-2 text-foreground/80 hover:text-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors hidden sm:block">
+            <button className={`p-2 rounded-full transition-colors hidden sm:block ${isScrolled ? "text-zinc-700 hover:text-black hover:bg-zinc-400/50" : "text-zinc-400 hover:text-white hover:bg-zinc-800/80"}`}>
               <User className="w-5 h-5" />
             </button>
             <Link
               href="/checkout"
-              className="hidden sm:flex items-center gap-2 bg-foreground text-background px-5 py-2.5 rounded-full text-sm font-medium hover:bg-foreground/90 transition-all shadow-md hover:shadow-xl"
+              className={`hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all shadow-md hover:shadow-xl ${isScrolled ? "bg-black text-zinc-300 hover:bg-black/80" : "bg-zinc-300 text-black hover:bg-zinc-200"}`}
             >
               <ShoppingBag className="w-4 h-4" />
               <span>Cart</span>
@@ -90,7 +90,7 @@ export function Navbar() {
 
             {/* Mobile Menu Toggle */}
             <button
-              className="md:hidden p-2 text-foreground"
+              className={`md:hidden p-2 ${isScrolled ? "text-black" : "text-zinc-300"}`}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? (

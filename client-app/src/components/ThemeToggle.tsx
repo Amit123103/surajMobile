@@ -4,7 +4,7 @@ import * as React from "react"
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
-export function ThemeToggle() {
+export function ThemeToggle({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
@@ -19,7 +19,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="p-2 text-foreground/80 hover:text-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors relative"
+      className={className || "p-2 text-foreground/80 hover:text-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors relative"}
       aria-label="Toggle theme"
     >
       {theme === "dark" ? (
