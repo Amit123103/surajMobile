@@ -17,8 +17,7 @@ export default function Addaccessory() {
   
   const [formData, setFormData] = useState({
     name: "",
-    brand: "",
-    type: "",
+    category: "",
     price: "",
   });
 
@@ -44,8 +43,7 @@ export default function Addaccessory() {
 
       await addDoc(collection(db, "accessories"), {
         name: formData.name,
-        brand: formData.brand,
-        type: formData.type,
+        category: formData.category,
         price: Number(formData.price),
         imageUrl: imageUrl,
         createdAt: new Date().toISOString(),
@@ -65,45 +63,33 @@ export default function Addaccessory() {
         <Link href="/accessories" className="p-2 rounded-xl border border-border hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <h2 className="text-2xl font-heading font-bold">Add New accessory</h2>
+        <h2 className="text-2xl font-heading font-bold">Add New Accessory</h2>
       </div>
 
       <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-border p-6 shadow-sm">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-1.5">accessory Name</label>
+              <label className="block text-sm font-medium mb-1.5">Accessory Name</label>
               <input
                 type="text"
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
-                placeholder="e.g. iaccessory 15 Pro Max"
+                placeholder="e.g. Wireless Earbuds Pro"
               />
             </div>
             
-            <div>
-              <label className="block text-sm font-medium mb-1.5">Brand</label>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium mb-1.5">Category</label>
               <input
                 type="text"
                 required
-                value={formData.brand}
-                onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
-                placeholder="e.g. Apple"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1.5">type</label>
-              <input
-                type="text"
-                required
-                value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
-                placeholder="e.g. 256GB"
+                placeholder="e.g. Audio, Power, Protection"
               />
             </div>
 
@@ -142,6 +128,7 @@ export default function Addaccessory() {
                   accept="image/*"
                   onChange={handleImageChange}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  title="Upload from Gallery or Camera"
                 />
               </div>
             </div>
@@ -152,7 +139,7 @@ export default function Addaccessory() {
               <Button type="button" variant="outline">Cancel</Button>
             </Link>
             <Button type="submit" disabled={loading} className="min-w-[120px]">
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save accessory"}
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save Accessory"}
             </Button>
           </div>
         </form>

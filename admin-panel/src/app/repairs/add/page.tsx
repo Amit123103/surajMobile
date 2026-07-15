@@ -16,9 +16,9 @@ export default function AddPhone() {
   const [preview, setPreview] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    deviceType: "",
+    name: "",
+    time: "",
+    details: "",
     price: "",
   });
 
@@ -43,9 +43,9 @@ export default function AddPhone() {
       }
 
       await addDoc(collection(db, "repairs"), {
-        title: formData.title,
-        description: formData.description,
-        deviceType: formData.deviceType,
+        name: formData.name,
+        time: formData.time,
+        details: formData.details,
         price: Number(formData.price),
         imageUrl: imageUrl,
         createdAt: new Date().toISOString(),
@@ -72,38 +72,38 @@ export default function AddPhone() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-1.5">Repair Title</label>
+              <label className="block text-sm font-medium mb-1.5">Repair Name</label>
               <input
                 type="text"
                 required
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
-                placeholder="e.g. iPhone 15 Pro Max"
+                placeholder="e.g. Screen Replacement"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-1.5">Description</label>
+              <label className="block text-sm font-medium mb-1.5">Estimated Time</label>
               <input
                 type="text"
                 required
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                value={formData.time}
+                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
-                placeholder="e.g. Apple"
+                placeholder="e.g. 1-2 Hours"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1.5">DeviceType</label>
+              <label className="block text-sm font-medium mb-1.5">Details</label>
               <input
                 type="text"
                 required
-                value={formData.deviceType}
-                onChange={(e) => setFormData({ ...formData, deviceType: e.target.value })}
+                value={formData.details}
+                onChange={(e) => setFormData({ ...formData, details: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
-                placeholder="e.g. 256GB"
+                placeholder="e.g. Genuine parts with warranty"
               />
             </div>
 
@@ -142,6 +142,7 @@ export default function AddPhone() {
                   accept="image/*"
                   onChange={handleImageChange}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  title="Upload from Gallery or Camera"
                 />
               </div>
             </div>

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ArrowRight, MapPin, CreditCard, ShoppingBag, ShieldCheck } from "lucide-react";
+import { ArrowRight, MapPin, CreditCard, ShoppingBag, ShieldCheck, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-
-const WHATSAPP_NUMBER = "919876543210"; // Editable in admin panel later
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 const mockCart = {
   items: [
@@ -31,8 +31,29 @@ export default function CheckoutPage() {
     address: "",
     pinCode: "",
     specialInstructions: "",
-    paymentMethod: "UPI",
+    paymentMethod: "Cash on Delivery",
   });
+  const [isDeliveryAvailable, setIsDeliveryAvailable] = useState(true);
+  const [adminPhone, setAdminPhone] = useState("917492892235");
+
+  useEffect(() => {
+    const docRef = doc(db, "settings", "shop");
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setIsDeliveryAvailable(data.isDeliveryAvailable ?? true);
+        if (data.isDeliveryAvailable === false) {
+          setFormData(prev => ({ ...prev, paymentMethod: "Walkaway (Store Pickup)" }));
+        }
+        if (data.adminPhone) {
+          // Clean the phone number (remove +, spaces, hyphens) to ensure wa.me link works perfectly
+          const cleanPhone = data.adminPhone.replace(/[\s\+\-]/g, '');
+          setAdminPhone(cleanPhone.startsWith('91') ? cleanPhone : `91${cleanPhone.replace(/^0+/, '')}`);
+        }
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -69,7 +90,7 @@ export default function CheckoutPage() {
     if (formData.specialInstructions) message += `*Instructions:* ${formData.specialInstructions}\n`;
 
     const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, "_blank");
+    window.open(`https://wa.me/${adminPhone}?text=${encodedMessage}`, "_blank");
   };
 
   return (
@@ -95,7 +116,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Mobile Number <span className="text-red-500">*</span></label>
-                  <input required name="mobileNumber" value={formData.mobileNumber} onChange={handleInputChange} type="tel" className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all" placeholder="+91 98765 43210" />
+                  <input required name="mobileNumber" value={formData.mobileNumber} onChange={handleInputChange} type="tel" className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all" placeholder="+91 63943 66374" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Alternate Number</label>
@@ -166,18 +187,41 @@ export default function CheckoutPage() {
             <div className="glass-card p-6 md:p-8 rounded-3xl">
               <h2 className="text-xl font-heading font-bold mb-6 flex items-center gap-2">
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-100 text-primary-600 dark:bg-primary-900/30 text-sm">3</span>
-                Payment Method
+                Payment & Fulfillment Method
               </h2>
-              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {["UPI", "Google Pay", "PhonePe", "Paytm", "Cash on Delivery"].map((method) => (
-                  <label key={method} className={`relative flex items-center justify-center px-4 py-4 rounded-xl border cursor-pointer transition-all ${formData.paymentMethod === method ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 font-medium' : 'border-border bg-background hover:bg-zinc-50 dark:hover:bg-zinc-800/50'}`}>
-                    <input type="radio" name="paymentMethod" value={method} checked={formData.paymentMethod === method} onChange={handleInputChange} className="sr-only" />
-                    <span>{method}</span>
-                    {formData.paymentMethod === method && (
-                      <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary-500"></div>
-                    )}
-                  </label>
-                ))}
+              
+              {!isDeliveryAvailable && (
+                <div className="mb-6 p-4 bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300 rounded-xl flex gap-3 items-start border border-orange-200 dark:border-orange-900/50">
+                  <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                  <p className="text-sm font-medium">Delivery is currently unavailable. Please choose Store Pickup (Walkaway).</p>
+                </div>
+              )}
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                {["Cash on Delivery", "Walkaway (Store Pickup)"].map((method) => {
+                  const isDisabled = method === "Cash on Delivery" && !isDeliveryAvailable;
+                  return (
+                    <label key={method} className={`relative flex items-center justify-center px-4 py-4 rounded-xl border transition-all ${
+                      isDisabled 
+                        ? 'opacity-50 cursor-not-allowed border-border bg-zinc-100 dark:bg-zinc-800' 
+                        : 'cursor-pointer ' + (formData.paymentMethod === method ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 font-medium' : 'border-border bg-background hover:bg-zinc-50 dark:hover:bg-zinc-800/50')
+                    }`}>
+                      <input 
+                        type="radio" 
+                        name="paymentMethod" 
+                        value={method} 
+                        checked={formData.paymentMethod === method} 
+                        onChange={handleInputChange} 
+                        disabled={isDisabled}
+                        className="sr-only" 
+                      />
+                      <span>{method}</span>
+                      {formData.paymentMethod === method && !isDisabled && (
+                        <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary-500"></div>
+                      )}
+                    </label>
+                  );
+                })}
               </div>
             </div>
 

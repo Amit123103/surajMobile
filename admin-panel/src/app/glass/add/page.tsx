@@ -16,10 +16,10 @@ export default function AddPhone() {
   const [preview, setPreview] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
-    phoneModel: "",
-    glassQuality: "",
-    warranty: "",
+    brand: "",
+    modelName: "",
     price: "",
+    isOutOfStock: false,
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,10 +43,10 @@ export default function AddPhone() {
       }
 
       await addDoc(collection(db, "glass"), {
-        phoneModel: formData.phoneModel,
-        glassQuality: formData.glassQuality,
-        warranty: formData.warranty,
+        brand: formData.brand,
+        modelName: formData.modelName,
         price: Number(formData.price),
+        isOutOfStock: formData.isOutOfStock,
         imageUrl: imageUrl,
         createdAt: new Date().toISOString(),
       });
@@ -71,40 +71,40 @@ export default function AddPhone() {
       <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-border p-6 shadow-sm">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-1.5">GlassItem PhoneModel</label>
-              <input
-                type="text"
-                required
-                value={formData.phoneModel}
-                onChange={(e) => setFormData({ ...formData, phoneModel: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
-                placeholder="e.g. iPhone 15 Pro Max"
-              />
-            </div>
-            
             <div>
-              <label className="block text-sm font-medium mb-1.5">GlassQuality</label>
+              <label className="block text-sm font-medium mb-1.5">Brand</label>
               <input
                 type="text"
                 required
-                value={formData.glassQuality}
-                onChange={(e) => setFormData({ ...formData, glassQuality: e.target.value })}
+                value={formData.brand}
+                onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
                 placeholder="e.g. Apple"
               />
             </div>
-
+            
             <div>
-              <label className="block text-sm font-medium mb-1.5">Warranty</label>
+              <label className="block text-sm font-medium mb-1.5">Model Name</label>
               <input
                 type="text"
                 required
-                value={formData.warranty}
-                onChange={(e) => setFormData({ ...formData, warranty: e.target.value })}
+                value={formData.modelName}
+                onChange={(e) => setFormData({ ...formData, modelName: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
-                placeholder="e.g. 256GB"
+                placeholder="e.g. iPhone 13"
               />
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="flex items-center gap-3 cursor-pointer p-4 border border-border rounded-xl bg-zinc-50 dark:bg-zinc-950">
+                <input
+                  type="checkbox"
+                  checked={formData.isOutOfStock}
+                  onChange={(e) => setFormData({ ...formData, isOutOfStock: e.target.checked })}
+                  className="w-5 h-5 rounded border-zinc-300 text-primary-600 focus:ring-primary-500"
+                />
+                <span className="text-sm font-medium">Mark as Out of Stock</span>
+              </label>
             </div>
 
             <div className="md:col-span-2">
@@ -142,6 +142,7 @@ export default function AddPhone() {
                   accept="image/*"
                   onChange={handleImageChange}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  title="Upload from Gallery or Camera"
                 />
               </div>
             </div>

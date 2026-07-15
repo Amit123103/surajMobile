@@ -1,6 +1,20 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Smartphone, Mail, MapPin, Phone } from "lucide-react";
+import { Smartphone, Mail, MapPin, Phone, Clock } from "lucide-react";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
+const formatTime = (timeStr: string) => {
+  if (!timeStr) return "";
+  const [hours, minutes] = timeStr.split(':');
+  const h = parseInt(hours, 10);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const formattedHours = h % 12 || 12;
+  return `${formattedHours}:${minutes} ${ampm}`;
+};
 
 const Facebook = ({ className }: { className?: string }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 24 24">
@@ -21,6 +35,29 @@ const Twitter = ({ className }: { className?: string }) => (
 );
 
 export function Footer() {
+  const [shopSettings, setShopSettings] = useState({
+    openTime: "10:00",
+    closeTime: "23:00",
+    adminPhone: "+91 7492892235",
+    adminEmail: "support@surajphonecare.in"
+  });
+
+  useEffect(() => {
+    const docRef = doc(db, "settings", "shop");
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setShopSettings({
+          openTime: data.openTime || "10:00",
+          closeTime: data.closeTime || "23:00",
+          adminPhone: data.adminPhone || "+91 7492892235",
+          adminEmail: data.adminEmail || "support@surajphonecare.in"
+        });
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
   return (
     <footer className="dark:bg-zinc-950 border-t border-border pt-16 pb-8">
       <div className="container mx-auto px-4 md:px-6">
@@ -29,7 +66,7 @@ export function Footer() {
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
               <div className="relative w-12 h-12 flex items-center justify-center">
-                <Image src="/logo.png" alt="Suraj Phone Care Logo" fill className="object-contain" />
+                <Image src="/logo.jpg" alt="Suraj Phone Care Logo" fill sizes="48px" className="object-contain" />
               </div>
             </Link>
             <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
@@ -94,18 +131,25 @@ export function Footer() {
               <li className="flex items-start gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
                 <MapPin className="w-5 h-5 text-primary-600 shrink-0 mt-0.5" />
                 <span>
-                  <strong className="block text-foreground mb-1">Store Locations:</strong>
-                  Green Valley, Main Market<br />
-                  Law Gate, University Road
+                  <strong className="block text-foreground mb-1">Store Location:</strong>
+                  Maa Sati Mobile Repairing Centre<br />
+                  Green Valley BB Tower 1
+                </span>
+              </li>
+              <li className="flex items-start gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
+                <Clock className="w-5 h-5 text-primary-600 shrink-0 mt-0.5" />
+                <span>
+                  <strong className="block text-foreground mb-1">Store Hours:</strong>
+                  {formatTime(shopSettings.openTime)} to {formatTime(shopSettings.closeTime)} (Daily)
                 </span>
               </li>
               <li className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
                 <Phone className="w-5 h-5 text-primary-600 shrink-0" />
-                <span>+91 98765 43210</span>
+                <span>{shopSettings.adminPhone}</span>
               </li>
               <li className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
                 <Mail className="w-5 h-5 text-primary-600 shrink-0" />
-                <span>support@surajphonecare.in</span>
+                <span>{shopSettings.adminEmail}</span>
               </li>
             </ul>
           </div>

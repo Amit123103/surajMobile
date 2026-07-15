@@ -68,9 +68,9 @@ export default function AdminPhones() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-zinc-50 dark:bg-zinc-950 border-b border-border">
-              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase">Product</th>
-              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase">Description</th>
-              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase">DeviceType</th>
+              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase">Repair</th>
+              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase">Time</th>
+              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase">Details</th>
               <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase">Price</th>
               <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase text-right">Actions</th>
             </tr>
@@ -89,17 +89,17 @@ export default function AdminPhones() {
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center overflow-hidden">
                         {repair.imageUrl ? (
-                          <img src={repair.imageUrl} alt={repair.title} className="w-full h-full object-contain" />
+                          <img src={repair.imageUrl} alt={repair.name} className="w-full h-full object-cover" />
                         ) : (
                           <Wrench className="w-5 h-5 text-zinc-400" />
                         )}
                       </div>
-                      <span className="font-medium text-sm">{repair.title}</span>
+                      <span className="font-medium text-sm">{repair.name}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-sm">{repair.description}</td>
-                  <td className="px-6 py-4 text-sm">{repair.deviceType}</td>
-                  <td className="px-6 py-4 text-sm font-medium text-primary-600">₹{repair.price.toLocaleString()}</td>
+                  <td className="px-6 py-4 text-sm">{repair.time}</td>
+                  <td className="px-6 py-4 text-sm max-w-[200px] truncate" title={repair.details}>{repair.details}</td>
+                  <td className="px-6 py-4 text-sm font-medium text-primary-600">₹{repair.price?.toLocaleString()}</td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <Link

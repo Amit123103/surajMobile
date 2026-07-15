@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Smartphone, Package, Users, TrendingUp, Wrench, Printer } from "lucide-react";
+import { Smartphone, Package, Users, TrendingUp, Wrench, Printer, Settings } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminDashboard() {
@@ -113,6 +113,10 @@ export default function AdminDashboard() {
             <Link href="/printing" className="p-4 rounded-xl border border-border hover:border-primary-500 hover:bg-primary-50 transition-all text-center group">
               <Printer className="w-6 h-6 mx-auto mb-2 text-zinc-400 group-hover:text-primary-600" />
               <span className="font-medium text-sm">Manage Printing</span>
+            </Link>
+            <Link href="/settings" className="p-4 rounded-xl border border-border hover:border-primary-500 hover:bg-primary-50 transition-all text-center group">
+              <Settings className="w-6 h-6 mx-auto mb-2 text-zinc-400 group-hover:text-primary-600" />
+              <span className="font-medium text-sm">Shop Settings</span>
             </Link>
           </div>
         </div>

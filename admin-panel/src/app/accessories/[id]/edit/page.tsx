@@ -20,8 +20,7 @@ export default function Editaccessory({ params }: { params: Promise<{ id: string
   
   const [formData, setFormData] = useState({
     name: "",
-    brand: "",
-    type: "",
+    category: "",
     price: "",
     imageUrl: "",
   });
@@ -36,8 +35,7 @@ export default function Editaccessory({ params }: { params: Promise<{ id: string
           const data = docSnap.data();
           setFormData({
             name: data.name,
-            brand: data.brand,
-            type: data.type,
+            category: data.category,
             price: data.price.toString(),
             imageUrl: data.imageUrl || "",
           });
@@ -79,8 +77,7 @@ export default function Editaccessory({ params }: { params: Promise<{ id: string
 
       await updateDoc(doc(db, "accessories", id), {
         name: formData.name,
-        brand: formData.brand,
-        type: formData.type,
+        category: formData.category,
         price: Number(formData.price),
         imageUrl: updatedImageUrl,
         updatedAt: new Date().toISOString(),
@@ -109,14 +106,14 @@ export default function Editaccessory({ params }: { params: Promise<{ id: string
         <Link href="/accessories" className="p-2 rounded-xl border border-border hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <h2 className="text-2xl font-heading font-bold">Edit accessory</h2>
+        <h2 className="text-2xl font-heading font-bold">Edit Accessory</h2>
       </div>
 
       <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-border p-6 shadow-sm">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-1.5">accessory Name</label>
+              <label className="block text-sm font-medium mb-1.5">Accessory Name</label>
               <input
                 type="text"
                 required
@@ -126,24 +123,13 @@ export default function Editaccessory({ params }: { params: Promise<{ id: string
               />
             </div>
             
-            <div>
-              <label className="block text-sm font-medium mb-1.5">Brand</label>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium mb-1.5">Category</label>
               <input
                 type="text"
                 required
-                value={formData.brand}
-                onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1.5">type</label>
-              <input
-                type="text"
-                required
-                value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
               />
             </div>
@@ -181,6 +167,7 @@ export default function Editaccessory({ params }: { params: Promise<{ id: string
                   accept="image/*"
                   onChange={handleImageChange}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  title="Upload from Gallery or Camera"
                 />
               </div>
             </div>

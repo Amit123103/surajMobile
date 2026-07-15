@@ -68,9 +68,9 @@ export default function AdminPhones() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-zinc-50 dark:bg-zinc-950 border-b border-border">
-              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase">Product</th>
-              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase">GlassQuality</th>
-              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase">Warranty</th>
+              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase">Brand</th>
+              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase">Model Name</th>
+              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase">Status</th>
               <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase">Price</th>
               <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase text-right">Actions</th>
             </tr>
@@ -89,17 +89,23 @@ export default function AdminPhones() {
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center overflow-hidden">
                         {glassitem.imageUrl ? (
-                          <img src={glassitem.imageUrl} alt={glassitem.phoneModel} className="w-full h-full object-contain" />
+                          <img src={glassitem.imageUrl} alt={glassitem.modelName} className="w-full h-full object-cover" />
                         ) : (
                           <Smartphone className="w-5 h-5 text-zinc-400" />
                         )}
                       </div>
-                      <span className="font-medium text-sm">{glassitem.phoneModel}</span>
+                      <span className="font-medium text-sm">{glassitem.brand}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-sm">{glassitem.glassQuality}</td>
-                  <td className="px-6 py-4 text-sm">{glassitem.warranty}</td>
-                  <td className="px-6 py-4 text-sm font-medium text-primary-600">₹{glassitem.price.toLocaleString()}</td>
+                  <td className="px-6 py-4 text-sm font-medium">{glassitem.modelName}</td>
+                  <td className="px-6 py-4 text-sm">
+                    {glassitem.isOutOfStock ? (
+                      <span className="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs font-medium">Out of Stock</span>
+                    ) : (
+                      <span className="bg-green-100 text-green-600 px-2 py-1 rounded-full text-xs font-medium">In Stock</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-sm font-medium text-primary-600">₹{glassitem.price?.toLocaleString()}</td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <Link

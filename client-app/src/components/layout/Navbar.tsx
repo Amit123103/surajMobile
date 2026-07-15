@@ -4,10 +4,21 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ShoppingBag, Smartphone, Wrench, Printer, Search, User } from "lucide-react";
+import { Menu, X, ShoppingBag, Smartphone, Wrench, Printer, Search, User, Clock } from "lucide-react";
 import Image from "next/image";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 import { ThemeToggle } from "@/components/ThemeToggle";
+
+const formatTime = (timeStr: string) => {
+  if (!timeStr) return "";
+  const [hours, minutes] = timeStr.split(':');
+  const h = parseInt(hours, 10);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const formattedHours = h % 12 || 12;
+  return `${formattedHours}:${minutes} ${ampm}`;
+};
 
 const navLinks = [
   { name: "Phones", href: "/phones", icon: Smartphone },
@@ -20,49 +31,77 @@ const navLinks = [
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [shopSettings, setShopSettings] = useState({
+    isShopOpen: true,
+    openTime: "10:00",
+    closeTime: "23:00"
+  });
   const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    // Listen to global shop settings
+    const docRef = doc(db, "settings", "shop");
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setShopSettings({
+          isShopOpen: data.isShopOpen ?? true,
+          openTime: data.openTime || "10:00",
+          closeTime: data.closeTime || "23:00"
+        });
+      }
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      unsubscribe();
+    };
   }, []);
 
   return (
-    <header
-      className={`fixed top-4 inset-x-0 z-50 transition-all duration-300 ${
-        isScrolled ? "translate-y-0" : "translate-y-2"
-      }`}
-    >
-      <div className="container max-w-5xl mx-auto px-4 md:px-6">
-        <div
-          className={`flex items-center justify-between rounded-full transition-all duration-500 shadow-lg ${
-            isScrolled
-              ? "bg-zinc-300/95 backdrop-blur-md border border-zinc-400 px-6 py-2"
-              : "bg-black border border-transparent px-6 py-3 md:py-4"
-          }`}
-        >
+    <header className="fixed top-0 inset-x-0 z-50 flex flex-col">
+      {/* Global Status Banner */}
+      <div className={`w-full py-1.5 px-4 text-center text-xs md:text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm ${
+        shopSettings.isShopOpen ? 'bg-[#25D366] text-white' : 'bg-red-500 text-white'
+      }`}>
+        <Clock className="w-4 h-4" />
+        {shopSettings.isShopOpen 
+          ? `Shop is currently OPEN (Closes at ${formatTime(shopSettings.closeTime)})`
+          : `Shop is currently CLOSED (Opens at ${formatTime(shopSettings.openTime)})`}
+      </div>
+
+      <div
+        className={`w-full transition-all duration-300 ${
+          isScrolled ? "bg-background/95 backdrop-blur-xl border-b border-border shadow-sm py-3" : "bg-background/80 backdrop-blur-md py-4 md:py-5"
+        }`}
+      >
+        <div className="container max-w-7xl mx-auto px-4 md:px-6">
+        <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="relative w-10 h-10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-              <Image src="/logo.jpg" alt="Suraj Phone Care Logo" fill className="object-contain" />
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="relative w-10 h-10 flex items-center justify-center transition-transform duration-500 group-hover:rotate-[360deg]">
+              <Image src="/logo.jpg" alt="Suraj Phone Care Logo" fill sizes="48px" className="object-contain rounded-xl" />
             </div>
+            <span className="font-heading font-bold text-xl tracking-tight hidden sm:block">Suraj<span className="text-primary-600">PhoneCare</span></span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-1 bg-foreground/5 backdrop-blur-md rounded-full px-2 py-1 border border-border/50">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`relative px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${
+                  className={`relative px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                     isActive
-                      ? isScrolled ? "text-black bg-zinc-400" : "text-white bg-zinc-800"
-                      : isScrolled ? "text-zinc-700 hover:text-black hover:bg-zinc-400/50" : "text-zinc-400 hover:text-white hover:bg-zinc-800/80"
+                      ? "text-white bg-foreground shadow-sm"
+                      : "text-foreground/70 hover:text-foreground hover:bg-foreground/10"
                   }`}
                 >
                   {link.name}
@@ -72,25 +111,22 @@ export function Navbar() {
           </nav>
 
           {/* Action Icons */}
-          <div className="flex items-center gap-2 md:gap-4">
-            <ThemeToggle className={`p-2 rounded-full transition-colors relative ${isScrolled ? "text-zinc-700 hover:text-black hover:bg-zinc-400/50" : "text-zinc-400 hover:text-white hover:bg-zinc-800/80"}`} />
-            <button className={`p-2 rounded-full transition-colors hidden sm:block ${isScrolled ? "text-zinc-700 hover:text-black hover:bg-zinc-400/50" : "text-zinc-400 hover:text-white hover:bg-zinc-800/80"}`}>
+          <div className="flex items-center gap-2 md:gap-3">
+            <ThemeToggle className="p-2.5 rounded-full text-foreground/70 hover:text-foreground hover:bg-foreground/10 transition-colors" />
+            <button className="p-2.5 rounded-full text-foreground/70 hover:text-foreground hover:bg-foreground/10 transition-colors hidden sm:block">
               <Search className="w-5 h-5" />
             </button>
-            <button className={`p-2 rounded-full transition-colors hidden sm:block ${isScrolled ? "text-zinc-700 hover:text-black hover:bg-zinc-400/50" : "text-zinc-400 hover:text-white hover:bg-zinc-800/80"}`}>
-              <User className="w-5 h-5" />
-            </button>
             <Link
-              href="/checkout"
-              className={`hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all shadow-md hover:shadow-xl ${isScrolled ? "bg-black text-zinc-300 hover:bg-black/80" : "bg-zinc-300 text-black hover:bg-zinc-200"}`}
+              href="/phones"
+              className="hidden sm:flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-md hover:shadow-lg bg-gradient-to-r from-primary-600 to-accent text-white hover:-translate-y-0.5 ml-2"
             >
               <ShoppingBag className="w-4 h-4" />
-              <span>Cart</span>
+              <span>Products</span>
             </Link>
 
             {/* Mobile Menu Toggle */}
             <button
-              className={`md:hidden p-2 ${isScrolled ? "text-black" : "text-zinc-300"}`}
+              className="md:hidden p-2.5 text-foreground rounded-full hover:bg-foreground/10"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? (
@@ -107,12 +143,12 @@ export function Navbar() {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 right-0 mt-4 px-4 md:hidden"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="absolute top-full left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-border md:hidden overflow-hidden"
           >
-            <div className="glass-card rounded-2xl p-4 flex flex-col gap-2 shadow-2xl">
+            <div className="container mx-auto px-4 py-6 flex flex-col gap-2">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
@@ -120,10 +156,10 @@ export function Navbar() {
                     key={link.name}
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-3 px-4 py-4 rounded-xl text-base font-semibold transition-colors ${
                       isActive
                         ? "bg-primary-50 text-primary-600 dark:bg-primary-900/20"
-                        : "hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
+                        : "text-foreground/80 hover:bg-foreground/5 hover:text-foreground"
                     }`}
                   >
                     <link.icon className="w-5 h-5" />
@@ -131,20 +167,21 @@ export function Navbar() {
                   </Link>
                 );
               })}
-              <div className="mt-4 pt-4 border-t border-border">
+              <div className="mt-6 pt-6 border-t border-border">
                 <Link
-                  href="/checkout"
+                  href="/phones"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full bg-foreground text-background px-4 py-3 rounded-xl font-medium"
+                  className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-primary-600 to-accent text-white px-4 py-4 rounded-xl font-bold shadow-md"
                 >
                   <ShoppingBag className="w-5 h-5" />
-                  View Cart
+                  View Products
                 </Link>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </header>
   );
 }
