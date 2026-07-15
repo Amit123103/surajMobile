@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ShoppingBag, Smartphone, Wrench, Printer, Search, User, Clock } from "lucide-react";
+import { Menu, X, ShoppingBag, Smartphone, Wrench, Printer, Search, User, Clock, Home } from "lucide-react";
 import Image from "next/image";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -21,6 +21,7 @@ const formatTime = (timeStr: string) => {
 };
 
 const navLinks = [
+  { name: "Home", href: "/", icon: Home },
   { name: "Phones", href: "/phones", icon: Smartphone },
   { name: "Accessories", href: "/accessories", icon: ShoppingBag },
   { name: "Repairs", href: "/repairs", icon: Wrench },

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FileText, MessageCircle, User, Phone } from "lucide-react";
+import Link from "next/link";
+import { FileText, MessageCircle, User, Phone, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -48,6 +49,10 @@ export default function PrintingPage() {
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-20 max-w-5xl">
+      <Link href="/" className="inline-flex items-center text-zinc-500 hover:text-primary-600 transition-colors mb-6 font-medium">
+        <ArrowLeft className="w-4 h-4 mr-2" /> Back to Home
+      </Link>
+      
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4">Professional Printing</h1>
         <p className="text-lg text-foreground/70">Configure your print settings below and send us your document securely via WhatsApp.</p>

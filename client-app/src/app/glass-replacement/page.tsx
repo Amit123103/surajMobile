@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Smartphone, ArrowRight, Loader2 } from "lucide-react";
+import { Smartphone, ArrowRight, Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -64,6 +64,10 @@ export default function GlassReplacementPage() {
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-20 max-w-4xl">
+      <Link href="/" className="inline-flex items-center text-zinc-500 hover:text-primary-600 transition-colors mb-6 font-medium">
+        <ArrowLeft className="w-4 h-4 mr-2" /> Back to Home
+      </Link>
+      
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4">Glass Replacement</h1>
         <p className="text-lg text-foreground/70">Original quality glass replacement without changing your original display panel.</p>

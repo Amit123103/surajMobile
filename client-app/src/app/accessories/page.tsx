@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Package, Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Loader2, Package } from "lucide-react";
 
 export default function AccessoriesPage() {
   const [accessories, setAccessories] = useState<any[]>([]);
@@ -30,6 +30,9 @@ export default function AccessoriesPage() {
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-20">
+      <Link href="/" className="inline-flex items-center text-zinc-500 hover:text-primary-600 transition-colors mb-6 font-medium">
+        <ArrowLeft className="w-4 h-4 mr-2" /> Back to Home
+      </Link>
       <h1 className="text-4xl md:text-5xl font-heading font-bold mb-8 pixel-text">Premium Accessories</h1>
       
       {loading ? (

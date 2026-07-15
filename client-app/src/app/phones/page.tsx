@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Loader2, Smartphone } from "lucide-react";
+import { Loader2, Smartphone, ArrowLeft } from "lucide-react";
 
 export default function PhonesPage() {
   const [phones, setPhones] = useState<any[]>([]);
@@ -33,6 +33,9 @@ export default function PhonesPage() {
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-20">
+      <Link href="/" className="inline-flex items-center text-zinc-500 hover:text-primary-600 transition-colors mb-6 font-medium">
+        <ArrowLeft className="w-4 h-4 mr-2" /> Back to Home
+      </Link>
       <h1 className="text-4xl md:text-5xl font-heading font-bold mb-8">Smartphones</h1>
       
       {loading ? (

@@ -92,11 +92,16 @@ export function Footer() {
               <span className="absolute -bottom-2 left-0 w-1/2 h-1 bg-gradient-to-r from-primary-600 to-accent rounded-full"></span>
             </h3>
             <ul className="space-y-3">
-              {['Home', 'Phones', 'Accessories', 'Track Order', 'About Us'].map((item) => (
-                <li key={item}>
-                  <Link href={`/${item.toLowerCase().replace(' ', '-')}`} className="text-zinc-600 dark:text-zinc-400 hover:text-primary-600 dark:hover:text-primary-500 transition-colors text-sm flex items-center gap-2 group">
+              {[
+                { name: 'Home', href: '/' },
+                { name: 'Phones', href: '/phones' },
+                { name: 'Accessories', href: '/accessories' },
+                { name: 'About Us', href: '/' }
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className="text-zinc-600 dark:text-zinc-400 hover:text-primary-600 dark:hover:text-primary-500 transition-colors text-sm flex items-center gap-2 group">
                     <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700 group-hover:bg-primary-600 transition-colors"></span>
-                    {item}
+                    {item.name}
                   </Link>
                 </li>
               ))}
@@ -110,11 +115,17 @@ export function Footer() {
               <span className="absolute -bottom-2 left-0 w-1/2 h-1 bg-gradient-to-r from-primary-600 to-accent rounded-full"></span>
             </h3>
             <ul className="space-y-3">
-              {['Mobile Repair', 'Glass Replacement', 'Printing Services', 'Software Update', 'Battery Replacement'].map((item) => (
-                <li key={item}>
-                  <Link href={`/${item.toLowerCase().replace(' ', '-')}`} className="text-zinc-600 dark:text-zinc-400 hover:text-primary-600 dark:hover:text-primary-500 transition-colors text-sm flex items-center gap-2 group">
+              {[
+                { name: 'Mobile Repair', href: '/repairs' },
+                { name: 'Glass Replacement', href: '/glass-replacement' },
+                { name: 'Printing Services', href: '/printing' },
+                { name: 'Software Update', href: '/repairs' },
+                { name: 'Battery Replacement', href: '/repairs' }
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className="text-zinc-600 dark:text-zinc-400 hover:text-primary-600 dark:hover:text-primary-500 transition-colors text-sm flex items-center gap-2 group">
                     <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700 group-hover:bg-primary-600 transition-colors"></span>
-                    {item}
+                    {item.name}
                   </Link>
                 </li>
               ))}
