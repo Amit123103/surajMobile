@@ -10,7 +10,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function AdminLogin() {
   const [step, setStep] = useState<1 | 2>(1);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("doctorsurajmobile@gmail.com");
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,7 +26,7 @@ export default function AdminLogin() {
       const res = await fetch("/api/auth/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: "doctorsurajmobile@gmail.com" }), // Hardcoded to ensure no tampering
       });
       const data = await res.json();
       
@@ -51,7 +51,7 @@ export default function AdminLogin() {
       const res = await fetch("/api/auth/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp }),
+        body: JSON.stringify({ email: "doctorsurajmobile@gmail.com", otp }),
       });
       const data = await res.json();
       
@@ -60,7 +60,7 @@ export default function AdminLogin() {
       }
       
       // OTP valid. Sign in using the backdoor token from the API
-      await signInWithEmailAndPassword(auth, email, data.token);
+      await signInWithEmailAndPassword(auth, "doctorsurajmobile@gmail.com", data.token);
       router.push("/");
     } catch (err: any) {
       setError(err.message);
@@ -102,10 +102,9 @@ export default function AdminLogin() {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 text-zinc-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
-                placeholder="admin@surajphonecare.in"
-                required
+                readOnly
+                disabled
+                className="w-full px-4 py-3 rounded-xl bg-zinc-100 border border-zinc-200 text-zinc-600 focus:outline-none transition-all cursor-not-allowed"
               />
             </div>
           ) : (
@@ -124,10 +123,13 @@ export default function AdminLogin() {
               />
               <button 
                 type="button" 
-                onClick={() => setStep(1)} 
+                onClick={() => {
+                  setStep(1);
+                  setOtp("");
+                }} 
                 className="text-sm text-primary-600 mt-2 hover:underline w-full text-center"
               >
-                Change Email
+                Go Back
               </button>
             </div>
           )}
