@@ -1,34 +1,33 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
+// Load environment variables - run with: node --env-file=.env.local create-admin.mjs
 const firebaseConfig = {
-  apiKey: "AIzaSyAEDh28jNITSNzDTzwxWHlbbgVtNVvcdRM",
-  authDomain: "company-22a56.firebaseapp.com",
-  projectId: "company-22a56",
-  storageBucket: "company-22a56.firebasestorage.app",
-  messagingSenderId: "747119827148",
-  appId: "1:747119827148:web:2a0900ce7ee8538dcc4a69",
-  measurementId: "G-42YZGPTNG9"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-const email = "amitsingh6394366374@gmail.com";
-const password = "AdminPassword123!";
+const email = process.argv[2] || "admin@example.com";
+const password = process.argv[3] || "ChangeThisPassword123!";
 
 async function createAdmin() {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    console.log("Successfully created test user!");
+    console.log("Successfully created admin user!");
     console.log("Email:", email);
-    console.log("Password:", password);
     process.exit(0);
   } catch (error) {
     if (error.code === 'auth/email-already-in-use') {
-      console.log("Test user already exists!");
+      console.log("Admin user already exists!");
       console.log("Email:", email);
-      console.log("Password:", password);
     } else {
       console.error("Error creating user:", error);
     }
