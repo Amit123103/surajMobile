@@ -315,8 +315,14 @@ export default function Home() {
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary-600/30 rounded-full blur-3xl"></div>
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-3xl"></div>
         </div>
-        <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="max-w-4xl mx-auto glass-panel bg-white/10 border-white/20 p-8 md:p-12 rounded-3xl backdrop-blur-md">
+        <div className="container mx-auto px-4 md:px-6 relative z-10" style={{ perspective: "1200px" }}>
+          <motion.div 
+            initial={{ rotateY: -90, opacity: 0, scale: 0.8 }}
+            whileInView={{ rotateY: 0, opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 1.2, type: "spring", bounce: 0.4 }}
+            className="max-w-4xl mx-auto glass-panel bg-white/10 border-white/20 p-8 md:p-12 rounded-3xl backdrop-blur-md transform-gpu"
+          >
             <div className="text-center mb-10">
               <h2 className="text-3xl md:text-5xl font-heading font-bold mb-4 text-white">Maa Sati Mobile Repairing Centre</h2>
               <p className="text-primary-100 text-lg md:text-xl font-medium">Hmare yaha sabhi company ka mobile repair hota hai</p>
@@ -355,7 +361,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
