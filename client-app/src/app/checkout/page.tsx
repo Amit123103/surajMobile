@@ -35,20 +35,27 @@ export default function CheckoutPage() {
   });
   const [isDeliveryAvailable, setIsDeliveryAvailable] = useState(true);
   const [adminPhone, setAdminPhone] = useState("917492892235");
+  const [store1Name, setStore1Name] = useState("Green Valley");
+  const [store2Name, setStore2Name] = useState("Law Gate");
 
   useEffect(() => {
     const docRef = doc(db, "settings", "shop");
     const unsubscribe = onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
-        setIsDeliveryAvailable(data.isDeliveryAvailable ?? true);
+        if (data.isDeliveryAvailable !== undefined) setIsDeliveryAvailable(data.isDeliveryAvailable);
+        if (data.adminPhone) {
+          const cleanPhone = data.adminPhone.replace(/\D/g, '');
+          setAdminPhone(cleanPhone);
+        }
+        if (data.store1Name) {
+          setStore1Name(data.store1Name);
+          // Only update formData if it's currently default and we have a new name
+          setFormData(prev => ({ ...prev, storeLocation: prev.storeLocation === "Green Valley" ? data.store1Name : prev.storeLocation }));
+        }
+        if (data.store2Name) setStore2Name(data.store2Name);
         if (data.isDeliveryAvailable === false) {
           setFormData(prev => ({ ...prev, paymentMethod: "Walkaway (Store Pickup)" }));
-        }
-        if (data.adminPhone) {
-          // Clean the phone number (remove +, spaces, hyphens) to ensure wa.me link works perfectly
-          const cleanPhone = data.adminPhone.replace(/[\s\+\-]/g, '');
-          setAdminPhone(cleanPhone.startsWith('91') ? cleanPhone : `91${cleanPhone.replace(/^0+/, '')}`);
         }
       }
     });
@@ -139,8 +146,8 @@ export default function CheckoutPage() {
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Preferred Store Location <span className="text-red-500">*</span></label>
                   <select name="storeLocation" value={formData.storeLocation} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all appearance-none cursor-pointer">
-                    <option value="Green Valley">Green Valley (Main Market)</option>
-                    <option value="Law Gate">Law Gate (University Road)</option>
+                    <option value={store1Name}>{store1Name}</option>
+                    <option value={store2Name}>{store2Name}</option>
                   </select>
                 </div>
                 

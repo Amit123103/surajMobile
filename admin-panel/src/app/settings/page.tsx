@@ -15,6 +15,11 @@ export default function SettingsPage() {
   const [isDeliveryAvailable, setIsDeliveryAvailable] = useState(true);
   const [adminPhone, setAdminPhone] = useState("+91 7492892235");
   const [adminEmail, setAdminEmail] = useState("doctorsurajmobile@gmail.com");
+  
+  const [store1Name, setStore1Name] = useState("Green Valley");
+  const [store1Address, setStore1Address] = useState("Main Market Area");
+  const [store2Name, setStore2Name] = useState("Law Gate");
+  const [store2Address, setStore2Address] = useState("University Road");
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -30,6 +35,11 @@ export default function SettingsPage() {
           if (data.isDeliveryAvailable !== undefined) setIsDeliveryAvailable(data.isDeliveryAvailable);
           if (data.adminPhone) setAdminPhone(data.adminPhone);
           if (data.adminEmail) setAdminEmail(data.adminEmail);
+          
+          if (data.store1Name) setStore1Name(data.store1Name);
+          if (data.store1Address) setStore1Address(data.store1Address);
+          if (data.store2Name) setStore2Name(data.store2Name);
+          if (data.store2Address) setStore2Address(data.store2Address);
         }
       } catch (error) {
         console.error("Error fetching settings:", error);
@@ -51,7 +61,11 @@ export default function SettingsPage() {
         closeTime,
         isDeliveryAvailable,
         adminPhone,
-        adminEmail
+        adminEmail,
+        store1Name,
+        store1Address,
+        store2Name,
+        store2Address
       }, { merge: true });
       
       alert("Settings saved successfully!");
@@ -210,6 +224,63 @@ export default function SettingsPage() {
                 <span className="absolute inset-0 rounded-full border-2 border-transparent peer-checked:border-primary-600 transition-all"></span>
               </div>
             </label>
+          </div>
+        {/* Store Locations */}
+        <div className="bg-white p-6 rounded-2xl border border-border shadow-sm space-y-6">
+          <div className="flex items-center gap-3 border-b border-border pb-4">
+            <div className="w-10 h-10 rounded-xl bg-green-100 text-green-600 flex items-center justify-center">
+              <Store className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="font-heading font-bold text-lg">Store Locations</h2>
+              <p className="text-xs text-zinc-500">Update the names and addresses of your physical stores.</p>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <h3 className="font-semibold text-sm border-b border-border pb-2">Store 1</h3>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Store Name</label>
+                <input 
+                  type="text" 
+                  value={store1Name}
+                  onChange={(e) => setStore1Name(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-border bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-primary-500 outline-none" 
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Store Address / Area</label>
+                <input 
+                  type="text" 
+                  value={store1Address}
+                  onChange={(e) => setStore1Address(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-border bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-primary-500 outline-none" 
+                />
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="font-semibold text-sm border-b border-border pb-2">Store 2</h3>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Store Name</label>
+                <input 
+                  type="text" 
+                  value={store2Name}
+                  onChange={(e) => setStore2Name(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-border bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-primary-500 outline-none" 
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Store Address / Area</label>
+                <input 
+                  type="text" 
+                  value={store2Address}
+                  onChange={(e) => setStore2Address(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-border bg-zinc-50 focus:bg-white focus:ring-2 focus:ring-primary-500 outline-none" 
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Star, ShieldCheck, Zap, Smartphone, Wrench, Printer, MapPin, Loader2, Sparkles, User, Clock, Award } from "lucide-react";
+import { ArrowRight, Star, ShieldCheck, Zap, Smartphone, Wrench, Printer, MapPin, Loader2, Sparkles, User, Clock, Award, Speaker, Layers, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { collection, getDocs, query, limit } from "firebase/firestore";
+import { collection, getDocs, query, limit, doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 const services = [
@@ -68,6 +68,28 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentBgIndex, setCurrentBgIndex] = useState(0);
+  const [shopSettings, setShopSettings] = useState({
+    store1Name: "Green Valley",
+    store1Address: "Main Market Area",
+    store2Name: "Law Gate",
+    store2Address: "University Road"
+  });
+
+  useEffect(() => {
+    const docRef = doc(db, "settings", "shop");
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setShopSettings({
+          store1Name: data.store1Name || "Green Valley",
+          store1Address: data.store1Address || "Main Market Area",
+          store2Name: data.store2Name || "Law Gate",
+          store2Address: data.store2Address || "University Road"
+        });
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const wordInterval = setInterval(() => {
@@ -126,17 +148,43 @@ export default function Home() {
           <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] opacity-20 dark:opacity-10"></div>
         </div>
 
-        <div className="container mx-auto px-4 md:px-6">
+        {/* Floating Animated Icons */}
+        <div className="hidden lg:block absolute inset-0 pointer-events-none z-0">
+          <motion.div 
+            animate={{ y: [0, -25, 0], rotate: [0, 10, 0] }} 
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-[25%] left-[10%] text-primary-500/20 dark:text-primary-400/20 drop-shadow-2xl"
+          >
+            <Smartphone className="w-24 h-24" />
+          </motion.div>
+          
+          <motion.div 
+            animate={{ y: [0, 30, 0], rotate: [0, -15, 0] }} 
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="absolute top-[40%] right-[10%] text-accent/20 dark:text-accent/30 drop-shadow-2xl"
+          >
+            <Layers className="w-28 h-28" />
+          </motion.div>
+          
+          <motion.div 
+            animate={{ y: [0, -20, 0], rotate: [0, 12, 0] }} 
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2.5 }}
+            className="absolute bottom-[20%] left-[20%] text-green-500/20 drop-shadow-2xl"
+          >
+            <Speaker className="w-20 h-20" />
+          </motion.div>
+
+          <motion.div 
+            animate={{ y: [0, 25, 0], rotate: [0, -8, 0] }} 
+            transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+            className="absolute bottom-[25%] right-[22%] text-blue-500/20 drop-shadow-2xl"
+          >
+            <Headphones className="w-16 h-16" />
+          </motion.div>
+        </div>
+
+        <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="flex items-center gap-2 px-4 py-2 rounded-full glass-panel text-sm font-medium mb-8"
-            >
-              <Sparkles className="w-4 h-4 text-accent" />
-              <span className="text-foreground/80">Next-Gen Mobile Solutions</span>
-            </motion.div>
             
             <motion.h1
               initial={{ opacity: 0, x: -30 }}
@@ -385,24 +433,24 @@ export default function Home() {
       
       {/* Location Banner */}
       <section className="py-20 md:py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-900 via-slate-900 to-black -z-10"></div>
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-accent/20 blur-[120px] -z-10 mix-blend-screen"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-primary-100 -z-10"></div>
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-primary-200/50 blur-[100px] -z-10"></div>
         
         <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="glass-panel border-white/10 bg-white/5 backdrop-blur-xl rounded-3xl p-8 md:p-12 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-10 premium-shadow">
+          <div className="bg-white/80 border border-primary-100 backdrop-blur-xl rounded-3xl p-8 md:p-12 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-10 premium-shadow">
             <motion.div 
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6 }}
-              className="text-white text-center lg:text-left max-w-xl"
+              className="text-zinc-900 text-center lg:text-left max-w-xl"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-sm font-medium mb-6">
-                <ShieldCheck className="w-4 h-4 text-accent" />
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 text-primary-700 border border-primary-200 text-sm font-medium mb-6">
+                <ShieldCheck className="w-4 h-4" />
                 <span>Premium Service Centers</span>
               </div>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-6">Visit Our Stores</h2>
-              <p className="text-white/70 text-lg">Get hands-on with the latest technology or drop off your device for a quick, professional repair at our conveniently located service centers.</p>
+              <p className="text-zinc-600 text-lg">Get hands-on with the latest technology or drop off your device for a quick, professional repair at our conveniently located service centers.</p>
             </motion.div>
             
             <motion.div 
@@ -412,22 +460,22 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto"
             >
-              <div className="flex items-center gap-4 bg-white/10 hover:bg-white/15 transition-colors backdrop-blur-md px-6 py-5 rounded-2xl border border-white/10 text-white flex-1 lg:flex-none">
-                <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center">
-                  <MapPin className="w-6 h-6 text-accent" />
+              <div className="flex items-center gap-4 bg-white hover:bg-primary-50 transition-colors px-6 py-5 rounded-2xl border border-primary-100 text-zinc-900 flex-1 lg:flex-none shadow-sm backdrop-blur-md">
+                <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center shrink-0">
+                  <MapPin className="w-6 h-6 text-primary-600" />
                 </div>
                 <div>
-                  <p className="font-bold text-lg">Green Valley</p>
-                  <p className="text-sm text-white/60">Main Market Area</p>
+                  <p className="font-bold text-lg">{shopSettings.store1Name}</p>
+                  <p className="text-sm text-zinc-500">{shopSettings.store1Address}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4 bg-white/10 hover:bg-white/15 transition-colors backdrop-blur-md px-6 py-5 rounded-2xl border border-white/10 text-white flex-1 lg:flex-none">
-                <div className="w-12 h-12 rounded-full bg-primary-500/20 flex items-center justify-center">
-                  <MapPin className="w-6 h-6 text-primary-400" />
+              <div className="flex items-center gap-4 bg-white hover:bg-primary-50 transition-colors px-6 py-5 rounded-2xl border border-primary-100 text-zinc-900 flex-1 lg:flex-none shadow-sm backdrop-blur-md">
+                <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center shrink-0">
+                  <MapPin className="w-6 h-6 text-primary-600" />
                 </div>
                 <div>
-                  <p className="font-bold text-lg">Law Gate</p>
-                  <p className="text-sm text-white/60">University Road</p>
+                  <p className="font-bold text-lg">{shopSettings.store2Name}</p>
+                  <p className="text-sm text-zinc-500">{shopSettings.store2Address}</p>
                 </div>
               </div>
             </motion.div>

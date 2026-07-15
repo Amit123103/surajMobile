@@ -39,7 +39,11 @@ export function Footer() {
     openTime: "10:00",
     closeTime: "23:00",
     adminPhone: "+91 7492892235",
-    adminEmail: "support@surajphonecare.in"
+    adminEmail: "support@surajphonecare.in",
+    store1Name: "Main Market Area",
+    store1Address: "Green Valley BB Tower 1",
+    store2Name: "University Road",
+    store2Address: "Law Gate Complex, Shop #12"
   });
 
   useEffect(() => {
@@ -51,7 +55,11 @@ export function Footer() {
           openTime: data.openTime || "10:00",
           closeTime: data.closeTime || "23:00",
           adminPhone: data.adminPhone || "+91 7492892235",
-          adminEmail: data.adminEmail || "support@surajphonecare.in"
+          adminEmail: data.adminEmail || "support@surajphonecare.in",
+          store1Name: data.store1Name || "Main Market Area",
+          store1Address: data.store1Address || "Green Valley BB Tower 1",
+          store2Name: data.store2Name || "University Road",
+          store2Address: data.store2Address || "Law Gate Complex, Shop #12"
         });
       }
     });
@@ -59,7 +67,7 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="dark:bg-zinc-950 border-t border-border pt-16 pb-8">
+    <footer className="bg-gradient-to-br from-primary-50 to-white border-t border-primary-100 pt-16 pb-8 text-zinc-900">
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Brand & Description */}
@@ -69,17 +77,17 @@ export function Footer() {
                 <Image src="/logo.jpg" alt="Suraj Phone Care Logo" fill sizes="48px" className="object-contain" />
               </div>
             </Link>
-            <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
+            <p className="text-zinc-600 text-sm leading-relaxed">
               Your one-stop destination for premium smartphones, accessories, expert repairs, and professional printing services. Experience technology at its best.
             </p>
             <div className="flex items-center gap-4 pt-2">
-              <a href="#" className="w-10 h-10 rounded-full bg-white dark:bg-zinc-900 border border-border flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-primary-600 hover:border-primary-600 transition-colors shadow-sm">
+              <a href="#" className="w-10 h-10 rounded-full bg-white border border-primary-200 flex items-center justify-center text-primary-600 hover:text-white hover:bg-primary-600 transition-colors shadow-sm">
                 <Facebook className="w-4 h-4" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white dark:bg-zinc-900 border border-border flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-primary-600 hover:border-primary-600 transition-colors shadow-sm">
+              <a href="#" className="w-10 h-10 rounded-full bg-white border border-primary-200 flex items-center justify-center text-primary-600 hover:text-white hover:bg-primary-600 transition-colors shadow-sm">
                 <Instagram className="w-4 h-4" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white dark:bg-zinc-900 border border-border flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-primary-600 hover:border-primary-600 transition-colors shadow-sm">
+              <a href="#" className="w-10 h-10 rounded-full bg-white border border-primary-200 flex items-center justify-center text-primary-600 hover:text-white hover:bg-primary-600 transition-colors shadow-sm">
                 <Twitter className="w-4 h-4" />
               </a>
             </div>
@@ -91,20 +99,27 @@ export function Footer() {
               Quick Links
               <span className="absolute -bottom-2 left-0 w-1/2 h-1 bg-gradient-to-r from-primary-600 to-accent rounded-full"></span>
             </h3>
-            <ul className="space-y-3">
-              {[
-                { name: 'Home', href: '/' },
-                { name: 'Phones', href: '/phones' },
-                { name: 'Accessories', href: '/accessories' },
-                { name: 'About Us', href: '/' }
-              ].map((item) => (
-                <li key={item.name}>
-                  <Link href={item.href} className="text-zinc-600 dark:text-zinc-400 hover:text-primary-600 dark:hover:text-primary-500 transition-colors text-sm flex items-center gap-2 group">
-                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700 group-hover:bg-primary-600 transition-colors"></span>
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
+            <ul className="space-y-4">
+              <li>
+                <Link href="/phones" className="text-zinc-600 hover:text-primary-600 transition-colors text-sm">
+                  Smartphones
+                </Link>
+              </li>
+              <li>
+                <Link href="/accessories" className="text-zinc-600 hover:text-primary-600 transition-colors text-sm">
+                  Accessories
+                </Link>
+              </li>
+              <li>
+                <Link href="/repairs" className="text-zinc-600 hover:text-primary-600 transition-colors text-sm">
+                  Repairs
+                </Link>
+              </li>
+              <li>
+                <Link href="/printing" className="text-zinc-600 hover:text-primary-600 transition-colors text-sm">
+                  Printing Services
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -123,8 +138,8 @@ export function Footer() {
                 { name: 'Battery Replacement', href: '/repairs' }
               ].map((item) => (
                 <li key={item.name}>
-                  <Link href={item.href} className="text-zinc-600 dark:text-zinc-400 hover:text-primary-600 dark:hover:text-primary-500 transition-colors text-sm flex items-center gap-2 group">
-                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700 group-hover:bg-primary-600 transition-colors"></span>
+                  <Link href={item.href} className="text-zinc-600 hover:text-primary-600 transition-colors text-sm flex items-center gap-2 group">
+                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 group-hover:bg-primary-600 transition-colors"></span>
                     {item.name}
                   </Link>
                 </li>
@@ -138,27 +153,25 @@ export function Footer() {
               Contact Us
               <span className="absolute -bottom-2 left-0 w-1/2 h-1 bg-gradient-to-r from-primary-600 to-accent rounded-full"></span>
             </h3>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
+            <ul className="space-y-5">
+              <li className="flex items-start gap-3 text-zinc-600 text-sm">
                 <MapPin className="w-5 h-5 text-primary-600 shrink-0 mt-0.5" />
-                <span>
-                  <strong className="block text-foreground mb-1">Store Location:</strong>
-                  Maa Sati Mobile Repairing Centre<br />
-                  Green Valley BB Tower 1
-                </span>
+                <div className="space-y-2">
+                  <p>
+                    <span className="font-semibold text-zinc-900 block">{shopSettings.store1Name}</span>
+                    {shopSettings.store1Address}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-zinc-900 block">{shopSettings.store2Name}</span>
+                    {shopSettings.store2Address}
+                  </p>
+                </div>
               </li>
-              <li className="flex items-start gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
-                <Clock className="w-5 h-5 text-primary-600 shrink-0 mt-0.5" />
-                <span>
-                  <strong className="block text-foreground mb-1">Store Hours:</strong>
-                  {formatTime(shopSettings.openTime)} to {formatTime(shopSettings.closeTime)} (Daily)
-                </span>
-              </li>
-              <li className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
+              <li className="flex items-center gap-3 text-zinc-600 text-sm">
                 <Phone className="w-5 h-5 text-primary-600 shrink-0" />
                 <span>{shopSettings.adminPhone}</span>
               </li>
-              <li className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
+              <li className="flex items-center gap-3 text-zinc-600 text-sm">
                 <Mail className="w-5 h-5 text-primary-600 shrink-0" />
                 <span>{shopSettings.adminEmail}</span>
               </li>
@@ -167,12 +180,14 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
-          <p>© {new Date().getFullYear()} Suraj Phone Care. All rights reserved.</p>
-          <div className="flex gap-6">
-            <Link href="/privacy" className="hover:text-primary-600 transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-primary-600 transition-colors">Terms of Service</Link>
-            <Link href="/refunds" className="hover:text-primary-600 transition-colors">Refund Policy</Link>
+        <div className="border-t border-primary-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-zinc-500 text-sm text-center md:text-left">
+            &copy; {new Date().getFullYear()} Suraj Phone Care. All rights reserved.
+          </p>
+          <div className="flex items-center gap-6 text-sm">
+            <Link href="#" className="text-zinc-500 hover:text-primary-600 transition-colors">Privacy Policy</Link>
+            <Link href="#" className="text-zinc-500 hover:text-primary-600 transition-colors">Terms of Service</Link>
+            <Link href="#" className="text-zinc-500 hover:text-primary-600 transition-colors">Refund Policy</Link>
           </div>
         </div>
       </div>

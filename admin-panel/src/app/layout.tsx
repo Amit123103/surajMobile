@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import Link from "next/link";
-import { LogOut, LayoutDashboard, Smartphone, Package, ShieldCheck, Wrench, Printer } from "lucide-react";
+import { LogOut, LayoutDashboard, Smartphone, Package, ShieldCheck, Wrench, Printer, Menu, X } from "lucide-react";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import "./globals.css";
@@ -13,6 +13,7 @@ import "./globals.css";
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -39,16 +40,31 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         ) : !user && pathname === "/login" ? (
           <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-100">{children}</div>
         ) : (
-          <div className="min-h-screen flex bg-zinc-50  text-foreground">
+          <div className="min-h-screen flex bg-zinc-50  text-foreground relative">
+            
+            {/* Mobile Overlay */}
+            {isMobileSidebarOpen && (
+              <div 
+                className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
+                onClick={() => setIsMobileSidebarOpen(false)}
+              />
+            )}
+
             {/* Sidebar */}
-            <aside className="w-64 bg-white  border-r border-border flex flex-col">
-              <div className="p-6 border-b border-border flex items-center gap-3">
-                <ShieldCheck className="w-8 h-8 text-primary-600" />
-                <h1 className="font-heading font-bold text-xl">Admin Panel</h1>
+            <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-border flex flex-col transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+              <div className="p-6 border-b border-border flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <ShieldCheck className="w-8 h-8 text-primary-600" />
+                  <h1 className="font-heading font-bold text-xl">Admin Panel</h1>
+                </div>
+                <button className="md:hidden text-zinc-500" onClick={() => setIsMobileSidebarOpen(false)}>
+                  <X className="w-6 h-6" />
+                </button>
               </div>
               <nav className="flex-1 p-4 space-y-2">
                 <Link
                   href="/"
+                  onClick={() => setIsMobileSidebarOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
                     pathname === "/"
                       ? "bg-primary-50 text-primary-600 "
@@ -60,6 +76,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </Link>
                 <Link
                   href="/phones"
+                  onClick={() => setIsMobileSidebarOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
                     pathname.startsWith("/phones")
                       ? "bg-primary-50 text-primary-600 "
@@ -71,6 +88,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </Link>
                 <Link
                   href="/accessories"
+                  onClick={() => setIsMobileSidebarOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
                     pathname.startsWith("/accessories")
                       ? "bg-primary-50 text-primary-600 "
@@ -82,6 +100,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </Link>
                 <Link
                   href="/repairs"
+                  onClick={() => setIsMobileSidebarOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
                     pathname.startsWith("/repairs")
                       ? "bg-primary-50 text-primary-600 "
@@ -93,6 +112,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </Link>
                 <Link
                   href="/glass"
+                  onClick={() => setIsMobileSidebarOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
                     pathname.startsWith("/glass")
                       ? "bg-primary-50 text-primary-600 "
@@ -104,6 +124,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </Link>
                 <Link
                   href="/printing"
+                  onClick={() => setIsMobileSidebarOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
                     pathname.startsWith("/printing")
                       ? "bg-primary-50 text-primary-600 "
@@ -129,9 +150,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 overflow-y-auto">
-              <header className="bg-white  border-b border-border p-6 flex justify-between items-center">
-                <h2 className="text-2xl font-heading font-bold">
+            <main className="flex-1 overflow-y-auto w-full">
+              <header className="bg-white  border-b border-border p-4 md:p-6 flex justify-between items-center sticky top-0 z-30">
+                <div className="flex items-center gap-4">
+                  <button 
+                    className="md:hidden p-2 rounded-lg bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-colors"
+                    onClick={() => setIsMobileSidebarOpen(true)}
+                  >
+                    <Menu className="w-5 h-5" />
+                  </button>
+                  <h2 className="text-xl md:text-2xl font-heading font-bold">
                   {pathname === "/"
                     ? "Overview"
                     : pathname.includes("phones")
