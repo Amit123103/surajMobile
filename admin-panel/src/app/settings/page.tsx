@@ -225,6 +225,7 @@ export default function SettingsPage() {
               </div>
             </label>
           </div>
+        </div>
         {/* Store Locations */}
         <div className="bg-white p-6 rounded-2xl border border-border shadow-sm space-y-6">
           <div className="flex items-center gap-3 border-b border-border pb-4">

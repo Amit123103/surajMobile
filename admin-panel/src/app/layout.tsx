@@ -173,7 +173,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     : pathname.includes("printing")
                     ? "Manage Printing"
                     : "Admin Panel"}
-                </h2>
+                  </h2>
+                </div>
                 <div className="flex items-center gap-4">
                   <Link href="/" className="text-sm text-primary-600 hover:underline">
                     View Live Site &rarr;
