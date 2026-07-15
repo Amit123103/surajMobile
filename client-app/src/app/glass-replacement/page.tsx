@@ -19,7 +19,7 @@ export default function GlassReplacementPage() {
     const fetchGlassModels = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "glass"));
-        const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as any));
+        const data: any[] = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
         setModels(data);
         
         if (data.length > 0) {
