@@ -12,6 +12,10 @@ import { FloatingContact } from "@/components/FloatingContact";
 export const metadata: Metadata = {
   title: "Suraj Phone Care",
   description: "Your one-stop destination for premium smartphones, accessories, expert repairs, and printing services.",
+  icons: {
+    icon: "/logo.jpg",
+    apple: "/logo.jpg",
+  },
 };
 
 export default function RootLayout({
