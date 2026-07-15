@@ -190,6 +190,20 @@ export function Footer() {
             <Link href="#" className="text-zinc-500 hover:text-primary-600 transition-colors">Refund Policy</Link>
           </div>
         </div>
+        {/* Developer Credit */}
+        <div className="mt-6 text-center">
+          <p className="text-zinc-400 text-xs">
+            Developed by{" "}
+            <a
+              href="https://amit123103.github.io/SmartPortfolio/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary-600 hover:text-primary-700 font-semibold transition-colors hover:underline"
+            >
+              Amit
+            </a>
+          </p>
+        </div>
       </div>
     </footer>
   );
