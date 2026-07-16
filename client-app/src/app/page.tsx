@@ -244,8 +244,8 @@ export default function Home() {
                 { title: "Expert Techs", desc: "Certified team", icon: Wrench },
                 { title: "90-Day Warranty", desc: "Peace of mind", icon: Award },
               ].map((feature, i) => (
-                <div key={i} className="flex items-center gap-3 md:gap-4 glass-panel bg-white/70 dark:bg-zinc-900/60 p-3 sm:p-4 rounded-2xl text-left border-white/40 dark:border-white/10 hover:-translate-y-1 transition-transform cursor-default">
-                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center text-primary-600 dark:text-primary-400 shrink-0">
+                <div key={i} className="flex items-center gap-3 md:gap-4 glass-panel bg-white/70 dark:bg-primary-950/60 p-3 sm:p-4 rounded-2xl text-left border-white/40 dark:border-primary-800/30 hover:-translate-y-1 transition-transform cursor-default">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary-500 dark:bg-primary-600 flex items-center justify-center text-white shrink-0 shadow-md">
                     <feature.icon className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
                   <div>
@@ -267,14 +267,14 @@ export default function Home() {
               <span className="text-white font-heading font-bold text-sm sm:text-lg md:text-xl tracking-widest uppercase">
                 {item}
               </span>
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-accent opacity-80 ml-4 sm:ml-10" />
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white opacity-80 ml-4 sm:ml-10" />
             </div>
           ))}
         </div>
       </div>
 
       {/* Services Section */}
-      <section className="py-24 relative overflow-hidden bg-gradient-to-b from-white to-primary-50/30 dark:from-zinc-950 dark:to-primary-950/20">
+      <section className="py-24 relative overflow-hidden bg-gradient-to-b from-white to-primary-50/30 dark:from-primary-950 dark:to-primary-900/40">
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-3xl md:text-5xl font-heading font-bold mb-6 text-zinc-900 dark:text-white">Premium Services, <br className="hidden sm:block" />Delivered With Care.</h2>
@@ -291,8 +291,8 @@ export default function Home() {
                 transition={{ delay: index * 0.1, duration: 0.5 }}
               >
                 <Link href={service.href} className="block h-full group">
-                  <div className="h-full bg-white dark:bg-zinc-900/90 border border-primary-100 dark:border-primary-900/50 rounded-3xl p-8 shadow-xl shadow-primary-500/5 dark:shadow-primary-500/10 hover:shadow-2xl hover:shadow-primary-500/10 dark:hover:shadow-primary-500/20 transition-all duration-300 hover:-translate-y-1.5 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-40 h-40 bg-primary-500/10 dark:bg-primary-500/5 rounded-full blur-3xl -mr-10 -mt-10 transition-opacity group-hover:bg-primary-500/20 dark:group-hover:bg-primary-500/10"></div>
+                  <div className="h-full bg-white dark:bg-primary-950/80 border border-primary-100 dark:border-primary-800/50 rounded-3xl p-8 shadow-xl shadow-primary-500/5 dark:shadow-primary-500/10 hover:shadow-2xl hover:shadow-primary-500/10 dark:hover:shadow-primary-500/20 transition-all duration-300 hover:-translate-y-1.5 relative overflow-hidden backdrop-blur-sm">
+                    <div className="absolute top-0 right-0 w-40 h-40 bg-primary-500/10 dark:bg-primary-500/10 rounded-full blur-3xl -mr-10 -mt-10 transition-opacity group-hover:bg-primary-500/20 dark:group-hover:bg-primary-500/20"></div>
                     <div className="w-16 h-16 rounded-2xl bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center mb-6 shadow-sm border border-primary-100 dark:border-primary-800">
                       <service.icon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
                     </div>
@@ -321,7 +321,7 @@ export default function Home() {
             whileInView={{ rotateY: 0, opacity: 1, scale: 1 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1.2, type: "spring", bounce: 0.4 }}
-            className="max-w-4xl mx-auto glass-panel bg-white/10 border-white/20 p-8 md:p-12 rounded-3xl backdrop-blur-md transform-gpu"
+            className="max-w-4xl mx-auto glass-panel bg-white/10 border-2 border-white/30 shadow-[0_0_40px_rgba(255,255,255,0.1)] p-8 md:p-12 rounded-3xl backdrop-blur-md transform-gpu"
           >
             <div className="text-center mb-10">
               <h2 className="text-3xl md:text-5xl font-heading font-bold mb-4 text-white">Maa Sati Mobile Repairing Centre</h2>
@@ -330,27 +330,27 @@ export default function Home() {
             
             <div className="grid md:grid-cols-2 gap-8 text-primary-50">
               <div className="space-y-4">
-                <h3 className="text-xl font-bold text-accent mb-4 border-b border-white/10 pb-2">Brands We Repair</h3>
-                <p className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-accent" /> Vivo, Oppo, Realme, Samsung</p>
-                <p className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-accent" /> Techno, Itel, Infinix, and more...</p>
+                <h3 className="text-xl font-bold text-white mb-4 border-b border-white/10 pb-2">Brands We Repair</h3>
+                <p className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-white" /> Vivo, Oppo, Realme, Samsung</p>
+                <p className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-white" /> Techno, Itel, Infinix, and more...</p>
                 
-                <h3 className="text-xl font-bold text-accent mb-4 border-b border-white/10 pb-2 mt-8">Hardware Fixes</h3>
-                <p className="flex items-center gap-2"><Wrench className="w-4 h-4 text-accent shrink-0" /> Folder & Display Change</p>
-                <p className="flex items-center gap-2"><Wrench className="w-4 h-4 text-accent shrink-0" /> Dead Mobile Repair</p>
-                <p className="flex items-center gap-2"><Wrench className="w-4 h-4 text-accent shrink-0" /> Network Problem Repair</p>
-                <p className="flex items-center gap-2"><Wrench className="w-4 h-4 text-accent shrink-0" /> Charging Problem Fixes</p>
+                <h3 className="text-xl font-bold text-white mb-4 border-b border-white/10 pb-2 mt-8">Hardware Fixes</h3>
+                <p className="flex items-center gap-2"><Wrench className="w-4 h-4 text-white shrink-0" /> Folder & Display Change</p>
+                <p className="flex items-center gap-2"><Wrench className="w-4 h-4 text-white shrink-0" /> Dead Mobile Repair</p>
+                <p className="flex items-center gap-2"><Wrench className="w-4 h-4 text-white shrink-0" /> Network Problem Repair</p>
+                <p className="flex items-center gap-2"><Wrench className="w-4 h-4 text-white shrink-0" /> Charging Problem Fixes</p>
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-xl font-bold text-accent mb-4 border-b border-white/10 pb-2">Components & Software</h3>
+                <h3 className="text-xl font-bold text-white mb-4 border-b border-white/10 pb-2">Components & Software</h3>
                 <p className="flex items-start gap-2">
-                  <Smartphone className="w-4 h-4 text-accent shrink-0 mt-1" /> 
+                  <Smartphone className="w-4 h-4 text-white shrink-0 mt-1" /> 
                   <span>Mic, Speaker, Fingerprint sensor, Ringer, Backpanel, etc. thik kiya jata hai aur naya lagaya jata hai.</span>
                 </p>
-                <p className="flex items-center gap-2 mt-4"><Smartphone className="w-4 h-4 text-accent shrink-0" /> Software Update</p>
-                <p className="flex items-center gap-2"><Smartphone className="w-4 h-4 text-accent shrink-0" /> Mobile and Tablet Flashing</p>
+                <p className="flex items-center gap-2 mt-4"><Smartphone className="w-4 h-4 text-white shrink-0" /> Software Update</p>
+                <p className="flex items-center gap-2"><Smartphone className="w-4 h-4 text-white shrink-0" /> Mobile and Tablet Flashing</p>
 
-                <div className="mt-8 p-6 bg-white/5 rounded-2xl border border-white/10 flex items-start gap-4">
+                <div className="mt-8 p-6 bg-white/5 rounded-2xl border-2 border-white/20 flex items-start gap-4">
                   <div className="p-3 bg-primary-600 rounded-xl">
                     <MapPin className="w-6 h-6 text-white" />
                   </div>
@@ -366,8 +366,10 @@ export default function Home() {
       </section>
 
       {/* Featured Products */}
-      <section className="py-24">
-        <div className="container mx-auto px-4 md:px-6">
+      <section className="py-24 relative overflow-hidden bg-gradient-to-b from-primary-50/30 to-white dark:from-primary-900/20 dark:to-primary-950">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary-200/50 dark:via-primary-800 to-transparent"></div>
+        <div className="absolute -left-40 top-40 w-96 h-96 bg-primary-200/10 dark:bg-primary-800/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div>
               <h2 className="text-3xl md:text-5xl font-heading font-bold mb-4">Latest & Greatest</h2>
@@ -398,9 +400,9 @@ export default function Home() {
                   className="group cursor-pointer h-full"
                 >
                   <Link href={`/phones/${phone.id}`} className="block h-full">
-                    <div className="glass-panel bg-white/60 dark:bg-slate-900/60 rounded-2xl p-3 sm:p-4 h-full flex flex-col relative transition-all duration-300 hover:shadow-xl hover:border-primary-500/30">
+                    <div className="glass-panel bg-white/60 dark:bg-primary-950/60 rounded-2xl p-3 sm:p-4 h-full flex flex-col relative transition-all duration-300 hover:shadow-xl hover:border-primary-500/30 dark:border-primary-800/50 backdrop-blur-md">
                       <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 bg-gradient-to-r from-accent to-primary-600 text-white text-[10px] sm:text-xs font-bold px-2 py-1 rounded-full shadow-sm">New</div>
-                      <div className="aspect-[4/5] rounded-xl bg-zinc-100/50 dark:bg-zinc-800/50 mb-3 sm:mb-5 p-3 sm:p-6 flex items-center justify-center overflow-hidden">
+                      <div className="aspect-[4/5] rounded-xl bg-primary-50/50 dark:bg-primary-900/40 mb-3 sm:mb-5 p-3 sm:p-6 flex items-center justify-center overflow-hidden">
                         {phone.imageUrl ? (
                           <Image
                             src={phone.imageUrl}

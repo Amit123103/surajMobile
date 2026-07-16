@@ -9,7 +9,9 @@
   --color-primary-100: #d1fae5;
   --color-primary-500: #10b981;
   --color-primary-600: #059669;
+  --color-primary-800: #065f46;
   --color-primary-900: #064e3b;
+  --color-primary-950: #022c22;
   
   --color-accent: #0ea5e9;
   --color-accent-hover: #0284c7;
@@ -45,11 +47,11 @@
 }
 
 .dark {
-  --bg: #0b0f19;
-  --fg: #f8fafc;
-  --card-bg: #1e293b;
-  --card-fg: #f8fafc;
-  --border-color: #334155;
+  --bg: #022c22; /* primary-950 equivalent */
+  --fg: #ecfdf5; /* primary-50 equivalent */
+  --card-bg: #064e3b; /* primary-900 equivalent */
+  --card-fg: #ecfdf5;
+  --border-color: #047857; /* primary-700 equivalent */
 }
 
 body {

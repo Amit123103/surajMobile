@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -38,6 +38,38 @@ export function Navbar() {
     closeTime: "23:00"
   });
   const pathname = usePathname();
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    // Update time every minute to check if shop status changed automatically
+    const timer = setInterval(() => setCurrentTime(new Date()), 60000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Compute if shop is open based on manual toggle AND current time
+  const isShopCurrentlyOpen = useMemo(() => {
+    // If admin explicitly set it to false, it stays closed
+    if (shopSettings.isShopOpen === false) return false; 
+
+    const currentHour = currentTime.getHours();
+    const currentMinute = currentTime.getMinutes();
+    const currentTotalMinutes = currentHour * 60 + currentMinute;
+
+    const [openH, openM] = (shopSettings.openTime || "10:00").split(':').map(Number);
+    const openTotalMinutes = openH * 60 + (openM || 0);
+
+    const [closeH, closeM] = (shopSettings.closeTime || "23:00").split(':').map(Number);
+    const closeTotalMinutes = closeH * 60 + (closeM || 0);
+
+    // Normal logic (e.g., 10:00 to 23:00)
+    if (closeTotalMinutes > openTotalMinutes) {
+      return currentTotalMinutes >= openTotalMinutes && currentTotalMinutes < closeTotalMinutes;
+    } 
+    // Handles cases where closing time is past midnight (e.g., 10:00 to 01:00)
+    else {
+      return currentTotalMinutes >= openTotalMinutes || currentTotalMinutes < closeTotalMinutes;
+    }
+  }, [currentTime, shopSettings]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,10 +100,10 @@ export function Navbar() {
     <header className="fixed top-0 inset-x-0 z-50 flex flex-col">
       {/* Global Status Banner */}
       <div className={`w-full py-1.5 px-4 text-center text-xs md:text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm ${
-        shopSettings.isShopOpen ? 'bg-[#25D366] text-white' : 'bg-red-500 text-white'
+        isShopCurrentlyOpen ? 'bg-[#25D366] text-white' : 'bg-red-500 text-white'
       }`}>
         <Clock className="w-4 h-4" />
-        {shopSettings.isShopOpen 
+        {isShopCurrentlyOpen 
           ? `Shop is currently OPEN (Closes at ${formatTime(shopSettings.closeTime)})`
           : `Shop is currently CLOSED (Opens at ${formatTime(shopSettings.openTime)})`}
       </div>
