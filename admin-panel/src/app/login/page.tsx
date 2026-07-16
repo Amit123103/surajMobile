@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { ShieldCheck, Loader2 } from "lucide-react";
@@ -60,7 +60,16 @@ export default function AdminLogin() {
       }
       
       // OTP valid. Sign in using the backdoor token from the API
-      await signInWithEmailAndPassword(auth, "doctorsurajmobile@gmail.com", data.token);
+      try {
+        await signInWithEmailAndPassword(auth, "doctorsurajmobile@gmail.com", data.token);
+      } catch (signInErr: any) {
+        if (signInErr.code === "auth/invalid-credential" || signInErr.code === "auth/user-not-found") {
+          // If the account doesn't exist yet, create it automatically with the backdoor password
+          await createUserWithEmailAndPassword(auth, "doctorsurajmobile@gmail.com", data.token);
+        } else {
+          throw signInErr;
+        }
+      }
       router.push("/");
     } catch (err: any) {
       setError(err.message);
