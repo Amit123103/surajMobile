@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-import { otpStore } from "@/lib/otp-store";
-
+import { cookies } from "next/headers";
+import crypto from "crypto";
 export async function POST(request: Request) {
   try {
     const { email } = await request.json();
@@ -14,9 +14,16 @@ export async function POST(request: Request) {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = Date.now() + 5 * 60 * 1000;
 
-    // Save to in-memory store (bypasses Firestore rules)
-    otpStore.set(email.toLowerCase(), { otp, expiresAt });
+    // Create a hash of the OTP to store in a secure cookie
+    const secret = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "fallback_secret";
+    const hash = crypto.createHmac("sha256", secret).update(otp).digest("hex");
     
+    // Store in cookie (works in serverless and bypasses hot-reload memory resets)
+    cookies().set("admin_otp", `${hash}.${expiresAt}`, { 
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 300 // 5 minutes
+    });
     // Always log the OTP to the console so the admin can log in even if email fails
     console.log(`\n=========================================`);
     console.log(`🔑 ADMIN OTP GENERATED: ${otp}`);
