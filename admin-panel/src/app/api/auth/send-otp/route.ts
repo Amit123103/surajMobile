@@ -24,10 +24,8 @@ export async function POST(request: Request) {
       secure: process.env.NODE_ENV === "production",
       maxAge: 300 // 5 minutes
     });
-    // Always log the OTP to the console so the admin can log in even if email fails
-    console.log(`\n=========================================`);
-    console.log(`🔑 ADMIN OTP GENERATED: ${otp}`);
-    console.log(`=========================================\n`);
+    // Log that an OTP was generated (without revealing the OTP itself)
+    console.log(`\n🔑 ADMIN OTP GENERATED and preparing to send via email...\n`);
 
     // Send email via Nodemailer
     if (process.env.SMTP_EMAIL && process.env.SMTP_PASSWORD && process.env.SMTP_EMAIL !== "your_email@gmail.com") {
@@ -58,10 +56,10 @@ export async function POST(request: Request) {
         console.log("Email sent successfully!");
       } catch (emailError) {
         console.error("\n❌ ERROR SENDING EMAIL (SMTP Error):", (emailError as Error).message);
-        console.log("Check your Google App Password. (OTP is printed above for immediate use)");
+        console.log("Check your Google App Password and SMTP configuration.");
       }
     } else {
-      console.log("SMTP credentials not configured. Email not sent. Use the OTP printed above.");
+      console.log("SMTP credentials not configured. Email not sent.");
     }
 
     return NextResponse.json({ success: true, message: "OTP process completed" });
