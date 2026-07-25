@@ -222,14 +222,18 @@ export default function Home() {
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
               className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
             >
-              <Button size="lg" variant="gradient" className="gap-2 group w-full sm:w-auto">
-                Explore Products
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
-                <Wrench className="w-4 h-4" />
-                Book a Repair
-              </Button>
+              <Link href="/phones" className="w-full sm:w-auto">
+                <Button size="lg" variant="gradient" className="gap-2 group w-full sm:w-auto">
+                  Explore Products
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+              <Link href="/repairs" className="w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
+                  <Wrench className="w-4 h-4" />
+                  Book a Repair
+                </Button>
+              </Link>
             </motion.div>
             
             <motion.div
