@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import { uploadProductImage } from "@/lib/uploadImage";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
@@ -29,16 +28,18 @@ export default function EditPhone({ params }: { params: Promise<{ id: string }> 
   useEffect(() => {
     const fetchPhone = async () => {
       try {
-        const docRef = doc(db, "phones", id);
-        const docSnap = await getDoc(docRef);
+        const { data, error } = await supabase
+          .from("phones")
+          .select("*")
+          .eq("id", id)
+          .single();
         
-        if (docSnap.exists()) {
-          const data = docSnap.data();
+        if (data && !error) {
           setFormData({
-            name: data.name,
-            brand: data.brand,
-            storage: data.storage,
-            price: data.price.toString(),
+            name: data.name || "",
+            brand: data.brand || "",
+            storage: data.storage || "",
+            price: data.price?.toString() || "",
             imageUrl: data.imageUrl || "",
           });
           if (data.imageUrl) setPreview(data.imageUrl);
@@ -75,14 +76,19 @@ export default function EditPhone({ params }: { params: Promise<{ id: string }> 
         updatedImageUrl = await uploadProductImage(imageFile, "phones");
       }
 
-      await updateDoc(doc(db, "phones", id), {
-        name: formData.name,
-        brand: formData.brand,
-        storage: formData.storage,
-        price: Number(formData.price),
-        imageUrl: updatedImageUrl,
-        updatedAt: new Date().toISOString(),
-      });
+      const { error } = await supabase
+        .from("phones")
+        .update({
+          name: formData.name,
+          brand: formData.brand,
+          storage: formData.storage,
+          price: Number(formData.price),
+          imageUrl: updatedImageUrl,
+          updatedAt: new Date().toISOString(),
+        })
+        .eq("id", id);
+
+      if (error) throw error;
 
       router.push("/phones");
     } catch (error) {

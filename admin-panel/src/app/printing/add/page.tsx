@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import { uploadProductImage } from "@/lib/uploadImage";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
@@ -40,14 +39,18 @@ export default function AddPrinting() {
         imageUrl = await uploadProductImage(imageFile, "printing");
       }
 
-      await addDoc(collection(db, "printing"), {
-        serviceName: formData.serviceName,
-        description: formData.description,
-        paperSize: formData.paperSize,
-        price: Number(formData.price),
-        imageUrl: imageUrl,
-        createdAt: new Date().toISOString(),
-      });
+      const { error } = await supabase.from("printing").insert([
+        {
+          serviceName: formData.serviceName,
+          description: formData.description,
+          paperSize: formData.paperSize,
+          price: Number(formData.price),
+          imageUrl: imageUrl,
+          createdAt: new Date().toISOString(),
+        },
+      ]);
+
+      if (error) throw error;
 
       router.push("/printing");
     } catch (error) {

@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { LogOut, LayoutDashboard, Smartphone, Package, ShieldCheck, Wrench, Printer, Menu, X } from "lucide-react";
 import { ThemeProvider } from "@/components/ThemeProvider";
@@ -18,15 +17,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const pathname = usePathname();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
       setLoading(false);
-      if (!user && pathname !== "/login") {
+      if (!session?.user && pathname !== "/login") {
         router.push("/login");
       }
     });
 
-    return () => unsubscribe();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+      if (!session?.user && pathname !== "/login") {
+        router.push("/login");
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [pathname, router]);
 
   return (
@@ -140,7 +147,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   {user?.email}
                 </div>
                 <button
-                  onClick={() => signOut(auth)}
+                  onClick={() => supabase.auth.signOut()}
                   className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-red-600 hover:bg-red-50  transition-colors"
                 >
                   <LogOut className="w-5 h-5" />

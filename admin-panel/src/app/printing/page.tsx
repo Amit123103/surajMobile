@@ -1,23 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Plus, Edit2, Trash2, Printer, Loader2 } from "lucide-react";
 
-export default function AdminPhones() {
+export default function AdminPrinting() {
   const [printing, setPhones] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchPhones = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "printing"));
-      const data = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setPhones(data);
+      const { data, error } = await supabase
+        .from("printing")
+        .select("*")
+        .order("createdAt", { ascending: false });
+
+      if (error) throw error;
+      setPhones(data || []);
     } catch (error) {
       console.error("Error fetching printing:", error);
     } finally {
@@ -29,10 +29,11 @@ export default function AdminPhones() {
     fetchPhones();
   }, []);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string | number) => {
     if (!confirm("Are you sure you want to delete this printjob?")) return;
     try {
-      await deleteDoc(doc(db, "printing", id));
+      const { error } = await supabase.from("printing").delete().eq("id", id);
+      if (error) throw error;
       setPhones((prev) => prev.filter((printjob) => printjob.id !== id));
     } catch (error) {
       console.error("Error deleting printjob:", error);

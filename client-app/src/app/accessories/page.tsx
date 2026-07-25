@@ -5,8 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Package, Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 
 export default function AccessoriesPage() {
   const [accessories, setAccessories] = useState<any[]>([]);
@@ -15,10 +14,14 @@ export default function AccessoriesPage() {
   useEffect(() => {
     const fetchAccessories = async () => {
       try {
-        const snapshot = await getDocs(collection(db, "accessories"));
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        data.sort((a: any, b: any) => (b.createdAt || "").localeCompare(a.createdAt || ""));
-        setAccessories(data);
+        const { data, error } = await supabase
+          .from("accessories")
+          .select("*")
+          .order("createdAt", { ascending: false });
+
+        if (data && !error) {
+          setAccessories(data);
+        }
       } catch (error) {
         console.error("Error fetching accessories:", error);
       } finally {

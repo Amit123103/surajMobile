@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import { uploadProductImage } from "@/lib/uploadImage";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
@@ -39,13 +38,17 @@ export default function Addaccessory() {
         imageUrl = await uploadProductImage(imageFile, "accessories");
       }
 
-      await addDoc(collection(db, "accessories"), {
-        name: formData.name,
-        category: formData.category,
-        price: Number(formData.price),
-        imageUrl: imageUrl,
-        createdAt: new Date().toISOString(),
-      });
+      const { error } = await supabase.from("accessories").insert([
+        {
+          name: formData.name,
+          category: formData.category,
+          price: Number(formData.price),
+          imageUrl: imageUrl,
+          createdAt: new Date().toISOString(),
+        },
+      ]);
+
+      if (error) throw error;
 
       router.push("/accessories");
     } catch (error) {

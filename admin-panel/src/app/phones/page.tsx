@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Plus, Edit2, Trash2, Smartphone, Loader2 } from "lucide-react";
 
@@ -12,12 +11,13 @@ export default function AdminPhones() {
 
   const fetchPhones = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "phones"));
-      const data = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setPhones(data);
+      const { data, error } = await supabase
+        .from("phones")
+        .select("*")
+        .order("createdAt", { ascending: false });
+
+      if (error) throw error;
+      setPhones(data || []);
     } catch (error) {
       console.error("Error fetching phones:", error);
     } finally {
@@ -29,10 +29,11 @@ export default function AdminPhones() {
     fetchPhones();
   }, []);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string | number) => {
     if (!confirm("Are you sure you want to delete this phone?")) return;
     try {
-      await deleteDoc(doc(db, "phones", id));
+      const { error } = await supabase.from("phones").delete().eq("id", id);
+      if (error) throw error;
       setPhones((prev) => prev.filter((phone) => phone.id !== id));
     } catch (error) {
       console.error("Error deleting phone:", error);

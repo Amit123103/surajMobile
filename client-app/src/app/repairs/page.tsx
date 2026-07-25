@@ -5,8 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Wrench, Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 
 export default function RepairsPage() {
   const [repairs, setRepairs] = useState<any[]>([]);
@@ -15,10 +14,14 @@ export default function RepairsPage() {
   useEffect(() => {
     const fetchRepairs = async () => {
       try {
-        const snapshot = await getDocs(collection(db, "repairs"));
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        data.sort((a: any, b: any) => (b.createdAt || "").localeCompare(a.createdAt || ""));
-        setRepairs(data);
+        const { data, error } = await supabase
+          .from("repairs")
+          .select("*")
+          .order("createdAt", { ascending: false });
+
+        if (data && !error) {
+          setRepairs(data);
+        }
       } catch (error) {
         console.error("Error fetching repairs:", error);
       } finally {

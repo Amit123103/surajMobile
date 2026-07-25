@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import { uploadProductImage } from "@/lib/uploadImage";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
@@ -40,14 +39,18 @@ export default function AddGlass() {
         imageUrl = await uploadProductImage(imageFile, "glass");
       }
 
-      await addDoc(collection(db, "glass"), {
-        brand: formData.brand,
-        modelName: formData.modelName,
-        price: Number(formData.price),
-        isOutOfStock: formData.isOutOfStock,
-        imageUrl: imageUrl,
-        createdAt: new Date().toISOString(),
-      });
+      const { error } = await supabase.from("glass").insert([
+        {
+          brand: formData.brand,
+          modelName: formData.modelName,
+          price: Number(formData.price),
+          isOutOfStock: Boolean(formData.isOutOfStock),
+          imageUrl: imageUrl,
+          createdAt: new Date().toISOString(),
+        },
+      ]);
+
+      if (error) throw error;
 
       router.push("/glass");
     } catch (error) {

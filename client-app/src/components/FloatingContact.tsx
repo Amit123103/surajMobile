@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { MessageCircle, Phone, Mail } from "lucide-react";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 
 export function FloatingContact() {
   const [shopSettings, setShopSettings] = useState({
@@ -12,17 +11,25 @@ export function FloatingContact() {
   });
 
   useEffect(() => {
-    const docRef = doc(db, "settings", "shop");
-    const unsubscribe = onSnapshot(docRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setShopSettings(prev => ({
-          adminPhone: data.adminPhone || prev.adminPhone,
-          adminEmail: data.adminEmail || prev.adminEmail
-        }));
+    const fetchShopSettings = async () => {
+      try {
+        const { data } = await supabase
+          .from("settings")
+          .select("*")
+          .eq("id", "shop")
+          .single();
+
+        if (data) {
+          setShopSettings(prev => ({
+            adminPhone: data.adminPhone || prev.adminPhone,
+            adminEmail: data.adminEmail || prev.adminEmail
+          }));
+        }
+      } catch (e) {
+        console.error(e);
       }
-    });
-    return () => unsubscribe();
+    };
+    fetchShopSettings();
   }, []);
 
   const cleanPhone = shopSettings.adminPhone.replace(/[\s\+\-]/g, '');

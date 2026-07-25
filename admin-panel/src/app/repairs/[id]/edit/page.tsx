@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import { uploadProductImage } from "@/lib/uploadImage";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
@@ -29,16 +28,18 @@ export default function EditRepair({ params }: { params: Promise<{ id: string }>
   useEffect(() => {
     const fetchPhone = async () => {
       try {
-        const docRef = doc(db, "repairs", id);
-        const docSnap = await getDoc(docRef);
+        const { data, error } = await supabase
+          .from("repairs")
+          .select("*")
+          .eq("id", id)
+          .single();
         
-        if (docSnap.exists()) {
-          const data = docSnap.data();
+        if (data && !error) {
           setFormData({
-            name: data.name,
-            time: data.time,
-            details: data.details,
-            price: data.price.toString(),
+            name: data.name || "",
+            time: data.time || "",
+            details: data.details || "",
+            price: data.price?.toString() || "",
             imageUrl: data.imageUrl || "",
           });
           if (data.imageUrl) setPreview(data.imageUrl);
@@ -75,14 +76,19 @@ export default function EditRepair({ params }: { params: Promise<{ id: string }>
         updatedImageUrl = await uploadProductImage(imageFile, "repairs");
       }
 
-      await updateDoc(doc(db, "repairs", id), {
-        name: formData.name,
-        time: formData.time,
-        details: formData.details,
-        price: Number(formData.price),
-        imageUrl: updatedImageUrl,
-        updatedAt: new Date().toISOString(),
-      });
+      const { error } = await supabase
+        .from("repairs")
+        .update({
+          name: formData.name,
+          time: formData.time,
+          details: formData.details,
+          price: Number(formData.price),
+          imageUrl: updatedImageUrl,
+          updatedAt: new Date().toISOString(),
+        })
+        .eq("id", id);
+
+      if (error) throw error;
 
       router.push("/repairs");
     } catch (error) {

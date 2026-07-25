@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { FileText, MessageCircle, User, Phone, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 
 export default function PrintingPage() {
   const [pages, setPages] = useState(1);
@@ -18,17 +17,23 @@ export default function PrintingPage() {
   const [adminPhone, setAdminPhone] = useState("917492892235");
 
   useEffect(() => {
-    const docRef = doc(db, "settings", "shop");
-    const unsubscribe = onSnapshot(docRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        if (data.adminPhone) {
+    const fetchShopSettings = async () => {
+      try {
+        const { data } = await supabase
+          .from("settings")
+          .select("*")
+          .eq("id", "shop")
+          .single();
+
+        if (data && data.adminPhone) {
           const cleanPhone = data.adminPhone.replace(/[\s\+\-]/g, '');
           setAdminPhone(cleanPhone.startsWith('91') ? cleanPhone : `91${cleanPhone.replace(/^0+/, '')}`);
         }
+      } catch (e) {
+        console.error(e);
       }
-    });
-    return () => unsubscribe();
+    };
+    fetchShopSettings();
   }, []);
 
   // Simple pricing logic

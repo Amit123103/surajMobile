@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { ShieldCheck, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -59,17 +58,24 @@ export default function AdminLogin() {
         throw new Error(data.error || "Invalid OTP");
       }
       
-      // OTP valid. Sign in using the backdoor token from the API
-      try {
-        await signInWithEmailAndPassword(auth, "doctorsurajmobile@gmail.com", data.token);
-      } catch (signInErr: any) {
-        if (signInErr.code === "auth/invalid-credential" || signInErr.code === "auth/user-not-found") {
-          // If the account doesn't exist yet, create it automatically with the backdoor password
-          await createUserWithEmailAndPassword(auth, "doctorsurajmobile@gmail.com", data.token);
-        } else {
-          throw signInErr;
+      // OTP valid. Sign in with Supabase
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: "doctorsurajmobile@gmail.com",
+        password: data.token,
+      });
+
+      if (signInError) {
+        // Try creating account if first time
+        const { error: signUpError } = await supabase.auth.signUp({
+          email: "doctorsurajmobile@gmail.com",
+          password: data.token,
+        });
+
+        if (signUpError && signUpError.message !== "User already registered") {
+          console.warn("Supabase Auth notice:", signUpError.message);
         }
       }
+
       router.push("/");
     } catch (err: any) {
       setError(err.message);

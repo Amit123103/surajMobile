@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import { Loader2, Smartphone, ArrowLeft } from "lucide-react";
 
 export default function PhonesPage() {
@@ -15,13 +14,14 @@ export default function PhonesPage() {
   useEffect(() => {
     const fetchPhones = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "phones"));
-        const data = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        data.sort((a: any, b: any) => (b.createdAt || "").localeCompare(a.createdAt || ""));
-        setPhones(data);
+        const { data, error } = await supabase
+          .from("phones")
+          .select("*")
+          .order("createdAt", { ascending: false });
+
+        if (data && !error) {
+          setPhones(data);
+        }
       } catch (error) {
         console.error("Error fetching phones:", error);
       } finally {

@@ -6,8 +6,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Star, ShieldCheck, Zap, Smartphone, Wrench, Printer, MapPin, Loader2, Sparkles, User, Clock, Award, Speaker, Layers, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { collection, getDocs, query, limit, doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 
 const services = [
   {
@@ -76,19 +75,26 @@ export default function Home() {
   });
 
   useEffect(() => {
-    const docRef = doc(db, "settings", "shop");
-    const unsubscribe = onSnapshot(docRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setShopSettings({
-          store1Name: data.store1Name || "Green Valley",
-          store1Address: data.store1Address || "Main Market Area",
-          store2Name: data.store2Name || "Law Gate",
-          store2Address: data.store2Address || "University Road"
-        });
+    const fetchShopSettings = async () => {
+      try {
+        const { data } = await supabase
+          .from("settings")
+          .select("*")
+          .eq("id", "shop")
+          .single();
+        if (data) {
+          setShopSettings({
+            store1Name: data.store1Name || "Green Valley",
+            store1Address: data.store1Address || "Main Market Area",
+            store2Name: data.store2Name || "Law Gate",
+            store2Address: data.store2Address || "University Road"
+          });
+        }
+      } catch (e) {
+        console.error(e);
       }
-    });
-    return () => unsubscribe();
+    };
+    fetchShopSettings();
   }, []);
 
   useEffect(() => {
@@ -109,20 +115,22 @@ export default function Home() {
   useEffect(() => {
     const fetchFeaturedPhones = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "phones"));
-        const data = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        data.sort((a: any, b: any) => (b.createdAt || "").localeCompare(a.createdAt || ""));
-        setFeaturedPhones(data.slice(0, 4));
+        const { data, error } = await supabase
+          .from("phones")
+          .select("*")
+          .order("createdAt", { ascending: false })
+          .limit(4);
+
+        if (data && !error) {
+          setFeaturedPhones(data);
+        }
       } catch (error) {
         console.error("Error fetching featured phones:", error);
       } finally {
         setLoading(false);
       }
     };
-    
+
     fetchFeaturedPhones();
   }, []);
 

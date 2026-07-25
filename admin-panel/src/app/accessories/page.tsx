@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Plus, Edit2, Trash2, Package, Loader2 } from "lucide-react";
 
@@ -12,12 +11,13 @@ export default function Adminaccessories() {
 
   const fetchaccessories = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "accessories"));
-      const data = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setaccessories(data);
+      const { data, error } = await supabase
+        .from("accessories")
+        .select("*")
+        .order("createdAt", { ascending: false });
+
+      if (error) throw error;
+      setaccessories(data || []);
     } catch (error) {
       console.error("Error fetching accessories:", error);
     } finally {
@@ -29,10 +29,11 @@ export default function Adminaccessories() {
     fetchaccessories();
   }, []);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string | number) => {
     if (!confirm("Are you sure you want to delete this accessory?")) return;
     try {
-      await deleteDoc(doc(db, "accessories", id));
+      const { error } = await supabase.from("accessories").delete().eq("id", id);
+      if (error) throw error;
       setaccessories((prev) => prev.filter((accessory) => accessory.id !== id));
     } catch (error) {
       console.error("Error deleting accessory:", error);

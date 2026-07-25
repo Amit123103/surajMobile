@@ -1,5 +1,4 @@
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 
 /**
  * Compress an image file into a JPEG base64 Data URL.
@@ -53,9 +52,9 @@ export const compressImageToBase64 = (
 };
 
 /**
- * Robustly uploads a product image.
- * Tries Firebase Storage first. If Firebase Storage throws an error (e.g., unauthorized / rules / CORS / missing bucket),
- * falls back to compressed Base64 Data URL so product creation NEVER breaks.
+ * Uploads a product image to Supabase Storage.
+ * Tries Supabase Storage bucket 'product-images' first.
+ * If Storage errors or bucket is not created, falls back to compressed Base64 Data URL.
  */
 export const uploadProductImage = async (
   file: File,
@@ -63,13 +62,28 @@ export const uploadProductImage = async (
 ): Promise<string> => {
   try {
     const cleanFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
-    const storageRef = ref(storage, `${folder}/${Date.now()}_${cleanFileName}`);
-    const snapshot = await uploadBytes(storageRef, file);
-    const downloadUrl = await getDownloadURL(snapshot.ref);
-    return downloadUrl;
+    const filePath = `${folder}/${Date.now()}_${cleanFileName}`;
+
+    const { error } = await supabase.storage
+      .from("product-images")
+      .upload(filePath, file, { upsert: true });
+
+    if (error) {
+      throw error;
+    }
+
+    const { data: publicUrlData } = supabase.storage
+      .from("product-images")
+      .getPublicUrl(filePath);
+
+    if (publicUrlData?.publicUrl) {
+      return publicUrlData.publicUrl;
+    }
+
+    throw new Error("Failed to get public URL");
   } catch (storageError) {
     console.warn(
-      `Firebase Storage upload failed for ${folder}, falling back to base64 encoding:`,
+      `Supabase Storage upload failed for ${folder}, using compressed base64 fallback:`,
       storageError
     );
     return await compressImageToBase64(file);

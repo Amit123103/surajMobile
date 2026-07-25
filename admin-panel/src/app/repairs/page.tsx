@@ -1,23 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Plus, Edit2, Trash2, Wrench, Loader2 } from "lucide-react";
 
-export default function AdminPhones() {
+export default function AdminRepairs() {
   const [repairs, setPhones] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchPhones = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "repairs"));
-      const data = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setPhones(data);
+      const { data, error } = await supabase
+        .from("repairs")
+        .select("*")
+        .order("createdAt", { ascending: false });
+
+      if (error) throw error;
+      setPhones(data || []);
     } catch (error) {
       console.error("Error fetching repairs:", error);
     } finally {
@@ -29,10 +29,11 @@ export default function AdminPhones() {
     fetchPhones();
   }, []);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string | number) => {
     if (!confirm("Are you sure you want to delete this repair?")) return;
     try {
-      await deleteDoc(doc(db, "repairs", id));
+      const { error } = await supabase.from("repairs").delete().eq("id", id);
+      if (error) throw error;
       setPhones((prev) => prev.filter((repair) => repair.id !== id));
     } catch (error) {
       console.error("Error deleting repair:", error);

@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ArrowRight, MapPin, CreditCard, ShoppingBag, ShieldCheck, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 
 const mockCart = {
   items: [
@@ -39,27 +38,36 @@ export default function CheckoutPage() {
   const [store2Name, setStore2Name] = useState("Law Gate");
 
   useEffect(() => {
-    const docRef = doc(db, "settings", "shop");
-    const unsubscribe = onSnapshot(docRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        if (data.isDeliveryAvailable !== undefined) setIsDeliveryAvailable(data.isDeliveryAvailable);
-        if (data.adminPhone) {
-          const cleanPhone = data.adminPhone.replace(/\D/g, '');
-          setAdminPhone(cleanPhone);
+    const fetchShopSettings = async () => {
+      try {
+        const { data } = await supabase
+          .from("settings")
+          .select("*")
+          .eq("id", "shop")
+          .single();
+
+        if (data) {
+          if (data.isDeliveryAvailable !== undefined && data.isDeliveryAvailable !== null) {
+            setIsDeliveryAvailable(data.isDeliveryAvailable);
+          }
+          if (data.adminPhone) {
+            const cleanPhone = data.adminPhone.replace(/\D/g, '');
+            setAdminPhone(cleanPhone);
+          }
+          if (data.store1Name) {
+            setStore1Name(data.store1Name);
+            setFormData(prev => ({ ...prev, storeLocation: prev.storeLocation === "Green Valley" ? data.store1Name : prev.storeLocation }));
+          }
+          if (data.store2Name) setStore2Name(data.store2Name);
+          if (data.isDeliveryAvailable === false) {
+            setFormData(prev => ({ ...prev, paymentMethod: "Walkaway (Store Pickup)" }));
+          }
         }
-        if (data.store1Name) {
-          setStore1Name(data.store1Name);
-          // Only update formData if it's currently default and we have a new name
-          setFormData(prev => ({ ...prev, storeLocation: prev.storeLocation === "Green Valley" ? data.store1Name : prev.storeLocation }));
-        }
-        if (data.store2Name) setStore2Name(data.store2Name);
-        if (data.isDeliveryAvailable === false) {
-          setFormData(prev => ({ ...prev, paymentMethod: "Walkaway (Store Pickup)" }));
-        }
+      } catch (e) {
+        console.error(e);
       }
-    });
-    return () => unsubscribe();
+    };
+    fetchShopSettings();
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

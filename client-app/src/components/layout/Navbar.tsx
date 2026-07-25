@@ -6,8 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ShoppingBag, Smartphone, Wrench, Printer, Search, User, Clock, Home } from "lucide-react";
 import Image from "next/image";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -77,22 +76,30 @@ export function Navbar() {
     };
     window.addEventListener("scroll", handleScroll);
 
-    // Listen to global shop settings
-    const docRef = doc(db, "settings", "shop");
-    const unsubscribe = onSnapshot(docRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setShopSettings({
-          isShopOpen: data.isShopOpen ?? true,
-          openTime: data.openTime || "10:00",
-          closeTime: data.closeTime || "23:00"
-        });
+    const fetchShopSettings = async () => {
+      try {
+        const { data } = await supabase
+          .from("settings")
+          .select("*")
+          .eq("id", "shop")
+          .single();
+
+        if (data) {
+          setShopSettings({
+            isShopOpen: data.isShopOpen ?? true,
+            openTime: data.openTime || "10:00",
+            closeTime: data.closeTime || "23:00"
+          });
+        }
+      } catch (e) {
+        console.error(e);
       }
-    });
+    };
+
+    fetchShopSettings();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      unsubscribe();
     };
   }, []);
 

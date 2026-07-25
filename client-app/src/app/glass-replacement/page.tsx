@@ -5,8 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Smartphone, ArrowRight, Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 
 export default function GlassReplacementPage() {
   const [models, setModels] = useState<any[]>([]);
@@ -18,19 +17,23 @@ export default function GlassReplacementPage() {
   useEffect(() => {
     const fetchGlassModels = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "glass"));
-        const data: any[] = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        data.sort((a: any, b: any) => (b.createdAt || "").localeCompare(a.createdAt || ""));
-        setModels(data);
-        
-        if (data.length > 0) {
-          const uniqueBrands = Array.from(new Set(data.map((m) => m.brand)));
-          const initialBrand = uniqueBrands[0] as string;
-          setSelectedBrand(initialBrand);
+        const { data, error } = await supabase
+          .from("glass")
+          .select("*")
+          .order("createdAt", { ascending: false });
+
+        if (data && !error) {
+          setModels(data);
           
-          const initialModels = data.filter((m) => m.brand === initialBrand);
-          if (initialModels.length > 0) {
-            setSelectedModel(initialModels[0].modelName);
+          if (data.length > 0) {
+            const uniqueBrands = Array.from(new Set(data.map((m) => m.brand)));
+            const initialBrand = uniqueBrands[0] as string;
+            setSelectedBrand(initialBrand);
+            
+            const initialModels = data.filter((m) => m.brand === initialBrand);
+            if (initialModels.length > 0) {
+              setSelectedModel(initialModels[0].modelName);
+            }
           }
         }
       } catch (error) {

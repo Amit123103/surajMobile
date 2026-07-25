@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import { uploadProductImage } from "@/lib/uploadImage";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
@@ -28,15 +27,17 @@ export default function Editaccessory({ params }: { params: Promise<{ id: string
   useEffect(() => {
     const fetchaccessory = async () => {
       try {
-        const docRef = doc(db, "accessories", id);
-        const docSnap = await getDoc(docRef);
+        const { data, error } = await supabase
+          .from("accessories")
+          .select("*")
+          .eq("id", id)
+          .single();
         
-        if (docSnap.exists()) {
-          const data = docSnap.data();
+        if (data && !error) {
           setFormData({
-            name: data.name,
-            category: data.category,
-            price: data.price.toString(),
+            name: data.name || "",
+            category: data.category || "",
+            price: data.price?.toString() || "",
             imageUrl: data.imageUrl || "",
           });
           if (data.imageUrl) setPreview(data.imageUrl);
@@ -73,13 +74,18 @@ export default function Editaccessory({ params }: { params: Promise<{ id: string
         updatedImageUrl = await uploadProductImage(imageFile, "accessories");
       }
 
-      await updateDoc(doc(db, "accessories", id), {
-        name: formData.name,
-        category: formData.category,
-        price: Number(formData.price),
-        imageUrl: updatedImageUrl,
-        updatedAt: new Date().toISOString(),
-      });
+      const { error } = await supabase
+        .from("accessories")
+        .update({
+          name: formData.name,
+          category: formData.category,
+          price: Number(formData.price),
+          imageUrl: updatedImageUrl,
+          updatedAt: new Date().toISOString(),
+        })
+        .eq("id", id);
+
+      if (error) throw error;
 
       router.push("/accessories");
     } catch (error) {

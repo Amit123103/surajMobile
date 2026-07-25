@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Smartphone, Mail, MapPin, Phone, Clock } from "lucide-react";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 
 const formatTime = (timeStr: string) => {
   if (!timeStr) return "";
@@ -47,23 +46,31 @@ export function Footer() {
   });
 
   useEffect(() => {
-    const docRef = doc(db, "settings", "shop");
-    const unsubscribe = onSnapshot(docRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setShopSettings({
-          openTime: data.openTime || "10:00",
-          closeTime: data.closeTime || "23:00",
-          adminPhone: data.adminPhone || "+91 7492892235",
-          adminEmail: data.adminEmail || "support@surajphonecare.in",
-          store1Name: data.store1Name || "Main Market Area",
-          store1Address: data.store1Address || "Green Valley BB Tower 1",
-          store2Name: data.store2Name || "University Road",
-          store2Address: data.store2Address || "Law Gate Complex, Shop #12"
-        });
+    const fetchShopSettings = async () => {
+      try {
+        const { data } = await supabase
+          .from("settings")
+          .select("*")
+          .eq("id", "shop")
+          .single();
+
+        if (data) {
+          setShopSettings({
+            openTime: data.openTime || "10:00",
+            closeTime: data.closeTime || "23:00",
+            adminPhone: data.adminPhone || "+91 7492892235",
+            adminEmail: data.adminEmail || "support@surajphonecare.in",
+            store1Name: data.store1Name || "Main Market Area",
+            store1Address: data.store1Address || "Green Valley BB Tower 1",
+            store2Name: data.store2Name || "University Road",
+            store2Address: data.store2Address || "Law Gate Complex, Shop #12"
+          });
+        }
+      } catch (e) {
+        console.error(e);
       }
-    });
-    return () => unsubscribe();
+    };
+    fetchShopSettings();
   }, []);
 
   return (

@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import { Smartphone, Package, Users, TrendingUp, Wrench, Printer, Settings } from "lucide-react";
 import Link from "next/link";
 
@@ -12,20 +11,20 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [phonesSnap, accSnap, repairsSnap, glassSnap, printingSnap] = await Promise.all([
-          getDocs(collection(db, "phones")),
-          getDocs(collection(db, "accessories")),
-          getDocs(collection(db, "repairs")),
-          getDocs(collection(db, "glass")),
-          getDocs(collection(db, "printing"))
+        const [phonesRes, accRes, repairsRes, glassRes, printingRes] = await Promise.all([
+          supabase.from("phones").select("*", { count: "exact", head: true }),
+          supabase.from("accessories").select("*", { count: "exact", head: true }),
+          supabase.from("repairs").select("*", { count: "exact", head: true }),
+          supabase.from("glass").select("*", { count: "exact", head: true }),
+          supabase.from("printing").select("*", { count: "exact", head: true }),
         ]);
         
         setStats({
-          phones: phonesSnap.size,
-          accessories: accSnap.size,
-          repairs: repairsSnap.size,
-          glass: glassSnap.size,
-          printing: printingSnap.size,
+          phones: phonesRes.count || 0,
+          accessories: accRes.count || 0,
+          repairs: repairsRes.count || 0,
+          glass: glassRes.count || 0,
+          printing: printingRes.count || 0,
         });
       } catch (error) {
         console.error("Error fetching stats:", error);

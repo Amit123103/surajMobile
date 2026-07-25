@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import { Save, Store, Truck, Clock, Loader2 } from "lucide-react";
 
 export default function SettingsPage() {
@@ -24,15 +23,17 @@ export default function SettingsPage() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const docRef = doc(db, "settings", "shop");
-        const docSnap = await getDoc(docRef);
+        const { data, error } = await supabase
+          .from("settings")
+          .select("*")
+          .eq("id", "shop")
+          .single();
         
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          if (data.isShopOpen !== undefined) setIsShopOpen(data.isShopOpen);
+        if (data && !error) {
+          if (data.isShopOpen !== undefined && data.isShopOpen !== null) setIsShopOpen(data.isShopOpen);
           if (data.openTime) setOpenTime(data.openTime);
           if (data.closeTime) setCloseTime(data.closeTime);
-          if (data.isDeliveryAvailable !== undefined) setIsDeliveryAvailable(data.isDeliveryAvailable);
+          if (data.isDeliveryAvailable !== undefined && data.isDeliveryAvailable !== null) setIsDeliveryAvailable(data.isDeliveryAvailable);
           if (data.adminPhone) setAdminPhone(data.adminPhone);
           if (data.adminEmail) setAdminEmail(data.adminEmail);
           
@@ -54,8 +55,8 @@ export default function SettingsPage() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const docRef = doc(db, "settings", "shop");
-      await setDoc(docRef, {
+      const { error } = await supabase.from("settings").upsert({
+        id: "shop",
         isShopOpen,
         openTime,
         closeTime,
@@ -66,7 +67,9 @@ export default function SettingsPage() {
         store1Address,
         store2Name,
         store2Address
-      }, { merge: true });
+      });
+
+      if (error) throw error;
       
       alert("Settings saved successfully!");
     } catch (error) {

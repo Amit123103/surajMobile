@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import { uploadProductImage } from "@/lib/uploadImage";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
@@ -29,17 +28,19 @@ export default function EditGlass({ params }: { params: Promise<{ id: string }> 
   useEffect(() => {
     const fetchPhone = async () => {
       try {
-        const docRef = doc(db, "glass", id);
-        const docSnap = await getDoc(docRef);
+        const { data, error } = await supabase
+          .from("glass")
+          .select("*")
+          .eq("id", id)
+          .single();
         
-        if (docSnap.exists()) {
-          const data = docSnap.data();
+        if (data && !error) {
           setFormData({
             brand: data.brand || "",
             modelName: data.modelName || "",
             price: data.price?.toString() || "",
             imageUrl: data.imageUrl || "",
-            isOutOfStock: data.isOutOfStock || false,
+            isOutOfStock: Boolean(data.isOutOfStock),
           });
           if (data.imageUrl) setPreview(data.imageUrl);
         } else {
@@ -75,14 +76,19 @@ export default function EditGlass({ params }: { params: Promise<{ id: string }> 
         updatedImageUrl = await uploadProductImage(imageFile, "glass");
       }
 
-      await updateDoc(doc(db, "glass", id), {
-        brand: formData.brand,
-        modelName: formData.modelName,
-        price: Number(formData.price),
-        imageUrl: updatedImageUrl,
-        isOutOfStock: formData.isOutOfStock,
-        updatedAt: new Date().toISOString(),
-      });
+      const { error } = await supabase
+        .from("glass")
+        .update({
+          brand: formData.brand,
+          modelName: formData.modelName,
+          price: Number(formData.price),
+          imageUrl: updatedImageUrl,
+          isOutOfStock: Boolean(formData.isOutOfStock),
+          updatedAt: new Date().toISOString(),
+        })
+        .eq("id", id);
+
+      if (error) throw error;
 
       router.push("/glass");
     } catch (error) {
