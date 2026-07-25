@@ -15,9 +15,9 @@ export default function RepairsPage() {
   useEffect(() => {
     const fetchRepairs = async () => {
       try {
-        const q = query(collection(db, "repairs"), orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
+        const snapshot = await getDocs(collection(db, "repairs"));
         const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        data.sort((a: any, b: any) => (b.createdAt || "").localeCompare(a.createdAt || ""));
         setRepairs(data);
       } catch (error) {
         console.error("Error fetching repairs:", error);

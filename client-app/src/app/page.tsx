@@ -109,13 +109,13 @@ export default function Home() {
   useEffect(() => {
     const fetchFeaturedPhones = async () => {
       try {
-        const q = query(collection(db, "phones"), limit(4));
-        const querySnapshot = await getDocs(q);
+        const querySnapshot = await getDocs(collection(db, "phones"));
         const data = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-        setFeaturedPhones(data);
+        data.sort((a: any, b: any) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+        setFeaturedPhones(data.slice(0, 4));
       } catch (error) {
         console.error("Error fetching featured phones:", error);
       } finally {

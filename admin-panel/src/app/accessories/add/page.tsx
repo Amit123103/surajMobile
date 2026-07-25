@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, storage } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
+import { uploadProductImage } from "@/lib/uploadImage";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { ArrowLeft, UploadCloud, Loader2 } from "lucide-react";
@@ -36,9 +36,7 @@ export default function Addaccessory() {
     try {
       let imageUrl = "";
       if (imageFile) {
-        const storageRef = ref(storage, `accessories/${Date.now()}_${imageFile.name}`);
-        const snapshot = await uploadBytes(storageRef, imageFile);
-        imageUrl = await getDownloadURL(snapshot.ref);
+        imageUrl = await uploadProductImage(imageFile, "accessories");
       }
 
       await addDoc(collection(db, "accessories"), {

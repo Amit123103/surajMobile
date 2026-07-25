@@ -20,6 +20,7 @@ export default function GlassReplacementPage() {
       try {
         const querySnapshot = await getDocs(collection(db, "glass"));
         const data: any[] = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        data.sort((a: any, b: any) => (b.createdAt || "").localeCompare(a.createdAt || ""));
         setModels(data);
         
         if (data.length > 0) {

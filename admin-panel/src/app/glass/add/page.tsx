@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, storage } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
+import { uploadProductImage } from "@/lib/uploadImage";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { ArrowLeft, UploadCloud, Loader2 } from "lucide-react";
 import Link from "next/link";
 
-export default function AddPhone() {
+export default function AddGlass() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -37,9 +37,7 @@ export default function AddPhone() {
     try {
       let imageUrl = "";
       if (imageFile) {
-        const storageRef = ref(storage, `glass/${Date.now()}_${imageFile.name}`);
-        const snapshot = await uploadBytes(storageRef, imageFile);
-        imageUrl = await getDownloadURL(snapshot.ref);
+        imageUrl = await uploadProductImage(imageFile, "glass");
       }
 
       await addDoc(collection(db, "glass"), {

@@ -20,6 +20,7 @@ export default function PhonesPage() {
           id: doc.id,
           ...doc.data(),
         }));
+        data.sort((a: any, b: any) => (b.createdAt || "").localeCompare(a.createdAt || ""));
         setPhones(data);
       } catch (error) {
         console.error("Error fetching phones:", error);

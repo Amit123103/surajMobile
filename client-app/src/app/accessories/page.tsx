@@ -15,9 +15,9 @@ export default function AccessoriesPage() {
   useEffect(() => {
     const fetchAccessories = async () => {
       try {
-        const q = query(collection(db, "accessories"), orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
+        const snapshot = await getDocs(collection(db, "accessories"));
         const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        data.sort((a: any, b: any) => (b.createdAt || "").localeCompare(a.createdAt || ""));
         setAccessories(data);
       } catch (error) {
         console.error("Error fetching accessories:", error);

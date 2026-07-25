@@ -2,14 +2,14 @@
 
 import { useState, useEffect, use } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, storage } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
+import { uploadProductImage } from "@/lib/uploadImage";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { ArrowLeft, UploadCloud, Loader2 } from "lucide-react";
 import Link from "next/link";
 
-export default function EditPhone({ params }: { params: Promise<{ id: string }> }) {
+export default function EditPrinting({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const { id } = use(params);
   
@@ -72,9 +72,7 @@ export default function EditPhone({ params }: { params: Promise<{ id: string }> 
       let updatedImageUrl = formData.imageUrl;
       
       if (imageFile) {
-        const storageRef = ref(storage, `printing/${Date.now()}_${imageFile.name}`);
-        const snapshot = await uploadBytes(storageRef, imageFile);
-        updatedImageUrl = await getDownloadURL(snapshot.ref);
+        updatedImageUrl = await uploadProductImage(imageFile, "printing");
       }
 
       await updateDoc(doc(db, "printing", id), {

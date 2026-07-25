@@ -2,8 +2,8 @@
 
 import { useState, useEffect, use } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, storage } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
+import { uploadProductImage } from "@/lib/uploadImage";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { ArrowLeft, UploadCloud, Loader2 } from "lucide-react";
@@ -70,9 +70,7 @@ export default function Editaccessory({ params }: { params: Promise<{ id: string
       let updatedImageUrl = formData.imageUrl;
       
       if (imageFile) {
-        const storageRef = ref(storage, `accessories/${Date.now()}_${imageFile.name}`);
-        const snapshot = await uploadBytes(storageRef, imageFile);
-        updatedImageUrl = await getDownloadURL(snapshot.ref);
+        updatedImageUrl = await uploadProductImage(imageFile, "accessories");
       }
 
       await updateDoc(doc(db, "accessories", id), {
